@@ -1,66 +1,84 @@
-import React from 'react';
-import {useState} from 'react';
-import Sublist from './components/Sublist';
+import React from "react";
+import { useEffect, useState } from "react";
+//import Auth from "./components/Auth/Authenticate";
+import { Route, Routes } from "react-router-dom";
+import NewEntry from "./pages/NewEntry";
+import MyTracker from "./pages/MyTracker";
+import Layout from "./components/layout/Layout";
+import MealPlan from "./pages/MealPlan";
+import { getAuth, signInAnonymously } from "firebase/auth";
+import { initializeApp } from "@firebase/app";
+//import { GoogleAuthProvider } from "firebase/auth";
+import SignIn from "./pages/SignIn";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+
+//import Sublist from "./components/Sublist";
 //import SearchForm from './components/NewRosh/SearchForm';
 
+const firebaseConfig = {
+  apiKey: "AIzaSyDfQ7Sx5eCoJUKkeW4PHOGXLVquFMwoN5U",
+  authDomain: "food-search-app-b90e5.firebaseapp.com",
+  projectId: "food-search-app-b90e5",
+  storageBucket: "food-search-app-b90e5.appspot.com",
+  messagingSenderId: "729844611055",
+  appId: "1:729844611055:web:d982ef3ed127615fbe681a",
+  measurementId: "G-ZYQS0LY53T",
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+//const credential = GoogleAuthProvider.credential(
+// googleUser.getAuthResponse().id_token);
+
 const App = () => {
-  const [subs, setSubs] = useState();
+  const [foodAtePerDate, setFoodAtePerDate] = useState([{calories: 0, date: '' }]);
 
-  const fetchMeals = async (event) => {
-      event.preventDefault();
-      try {
-          const response = await fetch("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/food/ingredients/substitutes?ingredientName=butter", {
-              "method": "GET",
-              "headers": {
-                  "x-rapidapi-host": "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com",
-                  "x-rapidapi-key": "32b559bd07msh11ee803b4e06284p16e173jsn54d7a9b35461",
-                  'Content-Type': 'application/json'
-              }
-          });
-          if (!response.ok) {
-              throw new Error('Something went wrong!');
-          }
-          const responseData = await response.json();
-
-          const loadedSubs = [];
-          for (const key in responseData) {
-              loadedSubs.push({
-                  id: key,
-                  substitutes: responseData[key].substitutes,
-                  message: responseData[key].message,
-              });
-          }
-          setSubs(loadedSubs);
-
-      } catch (error) {
-          console.log(error);
-      }
-
+  const entryHandler = (idx) => {
+    const newArray=[...foodAtePerDate, {calories: idx.calories, date: idx.date}];
+    setFoodAtePerDate(newArray);
   };
 
-  let content = <p>No substitutes found. </p>;
-  content = <Sublist subs={subs} />;
+  const deleteHandler = (index) => {
+    const newArray = [...foodAtePerDate]
+    newArray.splice(index,1);
+     setFoodAtePerDate(newArray);
+   }
+
+  useEffect(() => {
+    (async () => {
+      const res = await signInAnonymously(auth);
+      console.log(res);
+    })();
+  }, []);
+
+  
 
   return (
-      <>
-          <form>
-              <div>
-                  <div>
-                      <label>Enter food you ate </label>
-                      <input></input>
-                  </div>
-                  <div>
-                      <button onClick={fetchMeals}>Search</button>
-                  </div>
-              </div>
-          </form>
-
-          <div>
-              {content}
-          </div>
-      </>
-  )
-
+    <>
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <Routes>
+        <Route path="/" element={<Layout position="fixed"/>}>
+            <Route
+              path="newentry"
+              element={<NewEntry entryHandler={entryHandler} />}
+            >
+              {" "}
+            </Route>
+            <Route
+              path="mytracker"
+              element={<MyTracker data={foodAtePerDate} deleteHandler={deleteHandler} />}
+            ></Route>
+            <Route path="mealplan" element={<MealPlan />}></Route>
+            <Route path="signin" element={<SignIn />}></Route>
+          </Route>
+        </Routes>
+      </LocalizationProvider>
+    </>
+  );
 };
 
 export default App;
