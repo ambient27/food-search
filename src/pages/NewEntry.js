@@ -14,6 +14,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 //import SimpleSnackbar from "../components/UI/SimpleSnackbar";
 import Snackbar from "@mui/material/Snackbar";
 //import MuiAlert from '@mui/material/Alert';
+import { Typography } from "@mui/material";
 
 const isEmpty = (value) => value.trim() === "";
 
@@ -114,12 +115,8 @@ const NewEntry = (props) => {
         <Grid item xs={12}></Grid>
         <Grid item xs={12}></Grid>
         <Grid item xs={3}>
-          <label>
-            {" "}
-            <b>
-              <u className='par'> Enter food you ate</u>{" "}
-            </b>{" "}
-          </label>
+            <Typography> Enter food you ate{" "}
+            </Typography>
           <input className="input_example" onChange={searchHandler}></input>
           <Button
             sx={{ 
@@ -261,7 +258,7 @@ const NewEntry = (props) => {
             <ul>
               {thingsAte.map((data, index) => (
                 <Box key={index}>
-                  <b>Item:</b> <em>{data.text}</em> {""} <b>Calorie Count:</b>{" "}
+                  <Typography>Item:</Typography> <em>{data.text}</em> {""} <Typography>Calorie Count:</Typography>{" "}
                  <em> {data.calories}</em> &nbsp;
                   <Grid item xs={1}>
                     <Button

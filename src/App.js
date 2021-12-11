@@ -9,12 +9,29 @@ import MealPlan from "./pages/MealPlan";
 import { getAuth, signInAnonymously } from "firebase/auth";
 import { initializeApp } from "@firebase/app";
 //import { GoogleAuthProvider } from "firebase/auth";
+
 import SignIn from "./pages/SignIn";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import { red } from '@mui/material/colors';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 
-//import Sublist from "./components/Sublist";
-//import SearchForm from './components/NewRosh/SearchForm';
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: red[500],
+    },
+  },
+  typography: {
+    primary: {
+    fontFamily: 'Roboto',
+    color: 'red'
+    }
+
+
+  }
+});
 
 const firebaseConfig = {
   apiKey: "AIzaSyDfQ7Sx5eCoJUKkeW4PHOGXLVquFMwoN5U",
@@ -59,6 +76,7 @@ const App = () => {
 
   return (
     <>
+    <ThemeProvider theme={theme}>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <Routes>
         <Route path="/" element={<Layout position="fixed"/>}>
@@ -77,6 +95,7 @@ const App = () => {
           </Route>
         </Routes>
       </LocalizationProvider>
+      </ThemeProvider>
     </>
   );
 };
