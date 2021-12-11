@@ -1,4 +1,5 @@
-import { useState } from "react";
+import React from "react";
+import UserContext from "../store/UserContext";
 import "./NewEntry.css";
 import ListDividers from "../components/UI/List";
 import Button from "@mui/material/Button";
@@ -13,20 +14,23 @@ import DescriptionAlerts from "../components/UI/Alerts";
 import CircularProgress from "@mui/material/CircularProgress";
 //import SimpleSnackbar from "../components/UI/SimpleSnackbar";
 import Snackbar from "@mui/material/Snackbar";
+import firebase from "../api/firebase";
+import { collection, doc, setDoc } from "firebase/firestore";
 //import MuiAlert from '@mui/material/Alert';
 
 const isEmpty = (value) => value.trim() === "";
 
 const NewEntry = (props) => {
-  const [subs, setSubs] = useState([]);
-  const [loaded, isLoaded] = useState(false);
-  const [selectedSearch, isSearching] = useState("");
-  const [thingsAte, setThingsAte] = useState([]);
-  const [clickedEat, setClickedEat] = useState(false);
-  const [totalCalories, setTotalCalories] = useState([0]);
-  const [amountRemoved, setAmountRemoved] = useState([0]);
-  const [dateSelected, setDateSelected] = useState(new Date());
-  const [searchStarted, setSearchStarted] = useState(false);
+  const { user } = React.useContext(UserContext);
+  const [subs, setSubs] = React.useState([]);
+  const [loaded, isLoaded] = React.useState(false);
+  const [selectedSearch, isSearching] = React.useState("");
+  const [thingsAte, setThingsAte] = React.useState([]);
+  const [clickedEat, setClickedEat] = React.useState(false);
+  const [totalCalories, setTotalCalories] = React.useState([0]);
+  const [amountRemoved, setAmountRemoved] = React.useState([0]);
+  const [dateSelected, setDateSelected] = React.useState(new Date());
+  const [searchStarted, setSearchStarted] = React.useState(false);
 
   const fetchMeals = async (event) => {
     event.preventDefault();
@@ -86,7 +90,7 @@ const NewEntry = (props) => {
     isSearching(event.target.value);
   };
 
-  const iAteThisThing = () => {
+  const iAteThisThing = async () => {
     const newArray = [
       ...thingsAte,
       { text: subs[0].text, calories: subs[0].calories },
@@ -96,6 +100,18 @@ const NewEntry = (props) => {
     setTotalCalories(newCalArray);
     setThingsAte(newArray);
     setClickedEat(true);
+
+    const foodEntriesRef = collection(firebase.db, "food-entries");
+
+    await setDoc(doc(foodEntriesRef), {
+      category: "Generic Foods",
+      date: Date.now(),
+      fat: subs[0].fat,
+      protein: subs[0].protein,
+      label: subs[0].text,
+      kcal: subs[0].calories,
+      uid: user?.user?.uid,
+    });
   };
 
   const reducer = (previousValue, currentValue) => previousValue + currentValue;
@@ -117,21 +133,22 @@ const NewEntry = (props) => {
           <label>
             {" "}
             <b>
-              <u className='par'> Enter food you ate</u>{" "}
+              <u className="par"> Enter food you ate</u>{" "}
             </b>{" "}
           </label>
           <input className="input_example" onChange={searchHandler}></input>
           <Button
-            sx={{ 
-              margin: '.5rem',
-            borderRadius: "25px", 
-            backgroundColor: "#9F5C2D",  
-            fontFamily: "Merriweather",
-            fontStyle: "normal",
-            fontVariant: "normal",
-            color: 'black',
-            fontWeight: "700",
-            lineHeight: "26.4px", }}
+            sx={{
+              margin: ".5rem",
+              borderRadius: "25px",
+              backgroundColor: "#9F5C2D",
+              fontFamily: "Merriweather",
+              fontStyle: "normal",
+              fontVariant: "normal",
+              color: "black",
+              fontWeight: "700",
+              lineHeight: "26.4px",
+            }}
             variant="contained"
             onClick={fetchMeals}
           >
@@ -145,7 +162,15 @@ const NewEntry = (props) => {
               <CircularProgress />
             </Box>
           )}
-          {loaded && <h3 className='par'> &nbsp; <b><u>Item you selected</u></b></h3>}
+          {loaded && (
+            <h3 className="par">
+              {" "}
+              &nbsp;{" "}
+              <b>
+                <u>Item you selected</u>
+              </b>
+            </h3>
+          )}
           {loaded && (
             <ListDividers
               text={subs[0].text}
@@ -158,7 +183,7 @@ const NewEntry = (props) => {
                 fontVariant: "normal",
                 color: "black",
                 fontWeight: "700",
-                lineHeight: "26.4px"
+                lineHeight: "26.4px",
               }}
             >
               {" "}
@@ -196,7 +221,6 @@ const NewEntry = (props) => {
                 opacity: [0.9, 0.9, 0.9],
                 borderStyle: "solid",
                 gridColumn: "span 2",
-                
               }}
             >
               <b className="par">Total Calories</b>
@@ -225,7 +249,7 @@ const NewEntry = (props) => {
                 fontVariant: "normal",
                 fontWeight: "700",
                 lineHeight: "26.4px",
-                color: 'black'
+                color: "black",
               }}
               variant="contained"
               onClick={() =>
@@ -240,15 +264,16 @@ const NewEntry = (props) => {
           &nbsp;
           {loaded && (
             <Button
-              sx={{ backgroundColor: "#9F5C2D", 
-              borderRadius: "25px",
-              fontFamily: "Merriweather",
-              fontStyle: "normal",
-              fontVariant: "normal",
-              fontWeight: "700",
-              lineHeight: "26.4px",
-              color: 'black'
-            }}
+              sx={{
+                backgroundColor: "#9F5C2D",
+                borderRadius: "25px",
+                fontFamily: "Merriweather",
+                fontStyle: "normal",
+                fontVariant: "normal",
+                fontWeight: "700",
+                lineHeight: "26.4px",
+                color: "black",
+              }}
               variant="contained"
               onClick={iAteThisThing}
             >
@@ -262,19 +287,18 @@ const NewEntry = (props) => {
               {thingsAte.map((data, index) => (
                 <Box key={index}>
                   <b>Item:</b> <em>{data.text}</em> {""} <b>Calorie Count:</b>{" "}
-                 <em> {data.calories}</em> &nbsp;
+                  <em> {data.calories}</em> &nbsp;
                   <Grid item xs={1}>
                     <Button
                       sx={{
                         backgroundColor: "#9F5C2D",
                         borderRadius: "25px",
-                          fontFamily: "Merriweather",
-                          fontStyle: "normal",
-                          fontVariant: "normal",
-                          color: "black",
-                          fontWeight: "700",
-                          lineHeight: "26.4px"
-                        
+                        fontFamily: "Merriweather",
+                        fontStyle: "normal",
+                        fontVariant: "normal",
+                        color: "black",
+                        fontWeight: "700",
+                        lineHeight: "26.4px",
                       }}
                       onClick={() => deleteHandler(index)}
                       variant="contained"
