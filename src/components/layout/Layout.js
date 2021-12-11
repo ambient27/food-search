@@ -5,11 +5,12 @@ const Layout = (props) => {
   return (
     <div>
       <MainNavigation position="fixed" />
+      <div style={{ height: 64, width: "100vw" }} />
       <main>
-          <Outlet/>
+        <Outlet />
       </main>
     </div>
   );
-}
+};
 
 export default Layout;
