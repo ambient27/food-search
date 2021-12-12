@@ -19,7 +19,6 @@ const MealPlan = () => {
           margin: "1rem",
           borderRadius: "25px",
           backgroundColor: "#9F5C2D",
-          color: "black",
           fontFamily: "Merriweather",
           fontStyle: "normal",
           fontVariant: "normal",

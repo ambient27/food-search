@@ -4,8 +4,20 @@ import Stack from "@mui/material/Stack";
 
 export default function ContainedButtons(props) {
   return (
-    <Stack direction="row" spacing={2}>
-      <Button variant="contained">{props.name}</Button>
-    </Stack>
+    
+      <Button 
+      sx={{
+        margin: ".5rem",
+        borderRadius: "25px",
+        backgroundColor: "#9F5C2D",
+        fontFamily: "Merriweather",
+        fontStyle: "normal",
+        fontVariant: "normal",
+        color: "black",
+        fontWeight: "700",
+        lineHeight: "26.4px",
+      }}
+      variant="contained">{props.name}</Button>
+    
   );
 }
