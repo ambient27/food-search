@@ -23,59 +23,45 @@ const options = ["Breakfast", "Lunch", "Dinner", "Snacks"];
 const buttonStyle = {
   margin: ".5rem",
   borderRadius: "25px",
-  backgroundColor: "#9F5C2D",
-  fontFamily: "Merriweather",
-  fontStyle: "normal",
-  fontVariant: "normal",
-  color: "black",
-  fontWeight: "700",
   lineHeight: "26.4px",
 };
 
 const buttonStyle2 = {
   gridColumn: "1",
-  gridRow: "span 1",
   width: 200,
+  height: 50,
   textAlign: "center",
   borderRadius: "25px",
-  backgroundColor: "#9F5C2D",
-  fontFamily: "Merriweather",
-  fontStyle: "normal",
-  fontVariant: "normal",
-  fontWeight: "700",
-  lineHeight: "26.4px",
-  color: "black",
 };
 
 const boxStyle1 = {
   width: 225,
-  height: 320,
+  height: 255,
   borderRadius: "25px",
-  paddingTop: "5px",
-  paddingBottom: "10px",
+  paddingTop: "10px",
   paddingLeft: "10px",
   backgroundColor: "#DBA380",
-  opacity: [0.9, 0.9, 0.9],
   borderStyle: "solid",
   display: "grid",
-  textAlign: "center",
   gridTemplateColumns: "repeat(3, 1fr)",
   gridTemplateRows: "repeat(3, 1fr)",
-  rowGap: 3,
-  columnGap: 0,
 };
 
 const boxStyle2 = {
   paddingTop: "7px",
   borderRadius: "25px",
   width: 200,
-  height: 50,
+  height: 65,
   textAlign: "center",
   backgroundColor: "#9F5C2D",
-  opacity: [0.9, 0.9, 0.9],
   borderStyle: "solid",
   gridColumn: "span 2",
 };
+
+const fontFamily = 'roboto';
+const fontSize = 18;
+const fontWeight = 700;
+
 
 const NewEntry = (props) => {
   const { user } = React.useContext(UserContext);
@@ -132,39 +118,43 @@ const NewEntry = (props) => {
   };
 
   const iAteThisThing = async () => {
+    const searchIsValid = !isEmpty(selectedSearch);
+    if (!searchIsValid) {
+      setDisplaySearchAlert(true);
+      return;
+    } else {
+      const foodEntriesRef = collection(firebase.db, "food-entries");
+      const refID = Math.floor(Math.random() * 100);
 
-   
-    const foodEntriesRef = collection(firebase.db, "food-entries");
-    const refID = Math.floor(Math.random() * 100);
-
-    await setDoc(doc(foodEntriesRef), {
-      category: "Generic Foods",
-      date: dateSelected,
-      fat: subs[0].fat,
-      protein: subs[0].protein,
-      label: subs[0].text,
-      kcal: subs[0].calories,
-      uid: user?.user?.uid,
-      refid: refID,
-      whenate: inputValue,
-    });
-    setDisplayAlert(true);
-
+      await setDoc(doc(foodEntriesRef), {
+        category: "Generic Foods",
+        date: dateSelected,
+        fat: subs[0].fat,
+        protein: subs[0].protein,
+        label: subs[0].text,
+        kcal: subs[0].calories,
+        uid: user?.user?.uid,
+        refid: refID,
+        whenate: inputValue,
+      });
+      setDisplayAlert(true);
+      setDisplaySearchAlert(false);
+    }
   };
-
-
+  
   return (
     <>
       <Grid container spacing={2}>
-        <Grid item xs={3}>
-            <Typography variant='primary'>Food you ate</Typography> &nbsp;
+        <Grid item xs={4}>
+          <Typography variant="secondary">Food you ate</Typography> &nbsp;
           <input className="input_example" onChange={searchHandler}></input>
           <Button style={buttonStyle} variant="contained" onClick={fetchMeals}>
             Search
           </Button>
         </Grid>
-        <Grid item xs={3}>
-          <div>
+        <Grid item xs={8}></Grid>
+        <Grid item xs={4}>
+          
             <Autocomplete
               value={value}
               onChange={(event, newValue) => {
@@ -178,43 +168,43 @@ const NewEntry = (props) => {
               options={options}
               sx={{ width: 300 }}
               renderInput={(params) => (
-                <TextField {...params} label="Select when you ate this item" />
+                <TextField {...params} label="Select when you ate this item" sx={{label: {fontFamily}, label: {fontSize}, label: {fontWeight}}} />
               )}
             />
-          </div>
+         
         </Grid>
-        <Grid item xs={6}></Grid>
+        <Grid item xs={8}></Grid>
         <Grid item xs={3}>
           {searchStarted && (
             <Box sx={{ display: "flex", margin: "1rem" }}>
               <CircularProgress />
             </Box>
           )}
-          {loaded && <Typography variant='primary'>Item you selected</Typography>}
           {loaded && (
             <ListDividers
               text={subs[0].text}
               calories={subs[0].calories}
               protein={subs[0].protein}
               fat={subs[0].fat}
-            >
-            </ListDividers>
+            ></ListDividers>
           )}
         </Grid>
         <Grid item xs={9}>
           <Box style={boxStyle1}>
             <Box style={boxStyle2}>
-              <Typography variant='primary'>Total Calories</Typography>
-              {loaded && <b> {subs[0].calories}</b>}
+              <Typography variant="primary">Total Calories</Typography>
+              {loaded && <Typography> {subs[0].calories}</Typography>}
             </Box>
             &nbsp;
             <DesktopDatePicker
               label="Please enter a date"
               value={dateSelected}
+              maxDate={new Date()}
+              minDate={new Date('2021-12-01')}
               onChange={(newValue) => {
                 setDateSelected(newValue);
               }}
-              renderInput={(params) => <TextField {...params} />}
+              renderInput={(params) => <TextField {...params} sx={{label: {fontFamily}, label: {fontSize}, label: {fontWeight}}}/>}
             />
             <Button
               variant="contained"

@@ -1,15 +1,11 @@
 import React from "react";
-import { useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import NewEntry from "./pages/NewEntry";
 import MyTracker from "./pages/MyTracker";
 import Layout from "./components/layout/Layout";
 import MealPlan from "./pages/MealPlan";
-import { getAuth, signInAnonymously } from "firebase/auth";
-import { initializeApp } from "@firebase/app";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import { red } from "@mui/material/colors";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import SignIn from "./pages/SignIn";
 import { UserProvider } from "./store/UserContext";
@@ -18,15 +14,49 @@ import { UserProvider } from "./store/UserContext";
 const theme = createTheme({
   palette: {
     primary: {
-      main: red[500],
+      main: "#9F5C2D",
+      fontFamily: "Roboto",
     },
   },
   typography: {
-    primary: {
+      primary: {
       fontFamily: "Roboto",
       color: "black",
+      fontSize: 25,
+      fontWeight: 700,
     },
+    secondary: {
+      fontFamily: "Roboto",
+      color: "black",
+      fontSize: 20,
+      fontWeight: 600,
+    },
+    smallertext: {
+      fontFamily: "Roboto",
+      color: "white",
+      fontSize: 18,
+      fontWeight: 700,
+    },
+    button:{
+      fontFamily: "Roboto",
+      fontSize: 20,
+      fontWeight: 700,
+    }, 
+    textfield:{
+      fontFamily: "Roboto",
+      fontSize: 25,
+      fontWeight: 700,
+    }
   },
+components:{
+  textfield:{
+    styleOverrides: {
+      root: {
+    fontFamily: "Roboto",
+    fontSize: 25,
+    fontWeight: 700,
+    }}
+  }}
 
 });
 

@@ -3,18 +3,15 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import Divider from "@mui/material/Divider";
+import { Typography } from "@mui/material";
 
 const style = {
   width: "100%",
   maxWidth: 360,
   bgcolor: "#DBA380",
   borderRadius: "25px",
-  fontFamily: "Merriweather",
-  fontStyle: "normal",
-  fontVariant: "normal",
-  color: "black",
-  fontWeight: "700",
-  lineHeight: "26.4px",
+  borderStyle: 'solid',
+  textAlign: 'center'
 };
 
 export default function ListDividers(props) {
@@ -31,20 +28,21 @@ export default function ListDividers(props) {
   const fatSelected = itemStartFat.concat(props.fat);
 
   return (
-    <List sx={style} component="nav" aria-label="mailbox folders">
+    <List sx={style}  component="nav" aria-label="mailbox folders" subheader="Item you selected">
       <ListItem button>
-        <ListItemText primary={itemSelected} />
+        <ListItemText disableTypography primary={<Typography variant='secondary'>{itemSelected}</Typography>} />
       </ListItem>
       <Divider />
       <ListItem button divider>
-        <ListItemText primary={caloriesSelected} />
+        <ListItemText disableTypography 
+        primary={<Typography variant='secondary'>{caloriesSelected}</Typography>}/>
       </ListItem>
       <ListItem button>
-        <ListItemText primary={proteinSelected} />
+        <ListItemText disableTypography primary={<Typography variant='secondary'>{proteinSelected}</Typography>} />
       </ListItem>
       <Divider light />
       <ListItem button>
-        <ListItemText primary={fatSelected} />
+        <ListItemText disableTypography primary={<Typography variant='secondary'>{fatSelected}</Typography>} />
       </ListItem>
     </List>
   );
