@@ -33,44 +33,23 @@ const boxStyle2 = {
   gridColumn: "span 2",
 };
 
-
-
-
 const MyTracker = () => {
   const { user } = React.useContext(UserContext);
   const [entries, setEntries] = React.useState([]);
   const [dateSelected, setDateSelected] = React.useState(new Date());
-  const [progress, setProgress] = React.useState(10);
-  const [calorieSum, setCalorieSum] = React.useState([0]);
+  const [progress, setProgress] = React.useState(0);
 
   const trackDeleteHandler = (data) => {
     deleteDoc(doc(firebase.db, "food-entries", `${data.id}`));
     setEntries(entries.filter((entry) => entry.id !== data.id));
+
   };
-
-  // React.useEffect(() => {
-  //   const timer = setInterval(() => {
-  //     setProgress((oldProgress) => {
-  //       if (oldProgress === 100) {
-  //         return 100;
-  //       }
-  //       const diff = Math.random() * 10;
-  //       return Math.min(oldProgress + diff, 100);
-  //     });
-  //   }, 500);
-
-  //   return () => {
-  //     clearInterval(timer);
-  //   };
-  // }, []);
 
   React.useEffect(() => {
     if (user?.user?.uid) {
       const entriesRef = collection(firebase.db, "food-entries");
 
-      
-
-      const dateObj = dateSelected;
+        const dateObj = dateSelected;
         const month = dateObj.getUTCMonth() + 1; //months from 1-12
         const day = dateObj.getUTCDate()- 1;
         const year = dateObj.getUTCFullYear();
@@ -98,16 +77,13 @@ const MyTracker = () => {
         console.log(fetchedCalories);
 
         const setSum = fetchedCalories.reduce(reducer, 0);
-        console.log(setSum);
-        setCalorieSum(setSum);
-        console.log(calorieSum);
        
-        if ((calorieSum/20) >= 100)
+        if ((setSum/20) >= 100)
         {
           setProgress(100);
           setEntries(fetchedEntries);
         } else{
-        setProgress(calorieSum/20);
+        setProgress(setSum/20);
         setEntries(fetchedEntries);
         }
       })();
