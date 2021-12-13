@@ -126,9 +126,16 @@ const NewEntry = (props) => {
       const foodEntriesRef = collection(firebase.db, "food-entries");
       const refID = Math.floor(Math.random() * 100);
 
+      const dateObj = dateSelected;
+      const month = dateObj.getUTCMonth() + 1; //months from 1-12
+      const day = dateObj.getUTCDate() - 1;
+      const year = dateObj.getUTCFullYear();
+
+      const newdate = year + '/' + month + '/' + day;
+
       await setDoc(doc(foodEntriesRef), {
         category: "Generic Foods",
-        date: dateSelected,
+        date: newdate,
         fat: subs[0].fat,
         protein: subs[0].protein,
         label: subs[0].text,
