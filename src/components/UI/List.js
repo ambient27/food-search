@@ -105,7 +105,11 @@ export default function ListDividers(props) {
           />
         </ListItem>
         <Divider light />
-        <Button variant="contained" onClick={selectThisOne}>
+        <Button
+          variant="contained"
+          sx={{ margin: ".5rem" }}
+          onClick={selectThisOne}
+        >
           Select Item
         </Button>
       </List>
