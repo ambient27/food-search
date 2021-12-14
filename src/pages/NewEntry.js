@@ -17,53 +17,9 @@ import AlertTitle from "@mui/material/AlertTitle";
 import Stack from "@mui/material/Stack";
 
 const isEmpty = (value) => value.trim() === "";
-
 const options = ["Breakfast", "Lunch", "Dinner", "Snacks"];
 
-const buttonStyle = {
-  margin: ".5rem",
-  borderRadius: "25px",
-  lineHeight: "26.4px",
-};
-
-const buttonStyle2 = {
-  gridColumn: "1",
-  width: 200,
-  height: 50,
-  textAlign: "center",
-  borderRadius: "25px",
-};
-
-const boxStyle1 = {
-  width: 225,
-  height: 255,
-  borderRadius: "25px",
-  paddingTop: "10px",
-  paddingLeft: "10px",
-  backgroundColor: "#DBA380",
-  borderStyle: "solid",
-  display: "grid",
-  gridTemplateColumns: "repeat(3, 1fr)",
-  gridTemplateRows: "repeat(3, 1fr)",
-};
-
-const boxStyle2 = {
-  paddingTop: "7px",
-  borderRadius: "25px",
-  width: 200,
-  height: 65,
-  textAlign: "center",
-  backgroundColor: "#9F5C2D",
-  borderStyle: "solid",
-  gridColumn: "span 2",
-};
-
-const fontFamily = 'roboto';
-const fontSize = 18;
-const fontWeight = 700;
-
-
-const NewEntry = (props) => {
+const NewEntry = () => {
   const { user } = React.useContext(UserContext);
   const [subs, setSubs] = React.useState([]);
   const [loaded, isLoaded] = React.useState(false);
@@ -96,15 +52,21 @@ const NewEntry = (props) => {
         throw new Error("Something went wrong!");
       }
       const responseData = await response.json();
-      const loadedSubs = [];
+      const loadedData = [];
 
-      loadedSubs.push({
-        text: responseData.text,
-        calories: Math.trunc(responseData.hints[0].food.nutrients.ENERC_KCAL),
-        protein: Math.trunc(responseData.hints[0].food.nutrients.PROCNT),
-        fat: Math.trunc(responseData.hints[0].food.nutrients.FAT),
-      });
-      setSubs(loadedSubs);
+      for (let i = 0; i < 20; i++) {
+        loadedData.push({
+          text: responseData.hints[i].food.label,
+          calories: Math.trunc(responseData.hints[i].food.nutrients.ENERC_KCAL),
+          protein: Math.trunc(responseData.hints[i].food.nutrients.PROCNT),
+          fat: Math.trunc(responseData.hints[i].food.nutrients.FAT),
+          carbs: Math.trunc(responseData.hints[i].food.nutrients.CHOCDF),
+          fiber: Math.trunc(responseData.hints[i].food.nutrients.FIBTG),
+          foodId: responseData.hints[i].food.foodId,
+          category: responseData.hints[i].food.category,
+        });
+      }
+      setSubs(loadedData);
       isLoaded(true);
     } catch (error) {
       console.log(error);
@@ -117,111 +79,102 @@ const NewEntry = (props) => {
     isSearching(event.target.value);
   };
 
-  const iAteThisThing = async () => {
-    const searchIsValid = !isEmpty(selectedSearch);
-    if (!searchIsValid) {
-      setDisplaySearchAlert(true);
-      return;
-    } else {
-      const foodEntriesRef = collection(firebase.db, "food-entries");
-      const refID = Math.floor(Math.random() * 100);
+  const iAteThisThing = async (props) => {
+    const foodEntriesRef = collection(firebase.db, "food-entries");
+    const dateObj = dateSelected;
+    const month = dateObj.getUTCMonth() + 1; //months from 1-12
+    const day = dateObj.getUTCDate() - 1;
+    const year = dateObj.getUTCFullYear();
 
-      const dateObj = dateSelected;
-      const month = dateObj.getUTCMonth() + 1; //months from 1-12
-      const day = dateObj.getUTCDate() - 1;
-      const year = dateObj.getUTCFullYear();
+    const newdate = year + "/" + month + "/" + day;
 
-      const newdate = year + '/' + month + '/' + day;
-
-      await setDoc(doc(foodEntriesRef), {
-        category: "Generic Foods",
-        date: newdate,
-        fat: subs[0].fat,
-        protein: subs[0].protein,
-        label: subs[0].text,
-        kcal: subs[0].calories,
-        uid: user?.user?.uid,
-        refid: refID,
-        whenate: inputValue,
-      });
-      setDisplayAlert(true);
-      setDisplaySearchAlert(false);
-    }
+    await setDoc(doc(foodEntriesRef), {
+      category: props[0].category,
+      date: newdate,
+      fat: props[0].fat,
+      protein: props[0].protein,
+      label: props[0].item,
+      kcal: props[0].calories,
+      uid: user?.user?.uid,
+      whenate: inputValue,
+      fiber: props[0].fiber,
+      carbs: props[0].carbs,
+    });
+    isLoaded(false);
+    setDisplayAlert(true);
+    setDisplaySearchAlert(false);
   };
-  
+
   return (
     <>
       <Grid container spacing={2}>
+        <Grid item xs={12}></Grid>
         <Grid item xs={4}>
           <Typography variant="secondary">Food you ate</Typography> &nbsp;
           <input className="input_example" onChange={searchHandler}></input>
-          <Button style={buttonStyle} variant="contained" onClick={fetchMeals}>
+          <Button
+            sx={{ margin: ".5rem" }}
+            variant="contained"
+            onClick={fetchMeals}
+          >
             Search
           </Button>
         </Grid>
-        <Grid item xs={8}></Grid>
-        <Grid item xs={4}>
-          
-            <Autocomplete
-              value={value}
-              onChange={(event, newValue) => {
-                setValue(newValue);
-              }}
-              inputValue={inputValue}
-              onInputChange={(event, newInputValue) => {
-                setInputValue(newInputValue);
-              }}
-              id="controllable-states-demo"
-              options={options}
-              sx={{ width: 300 }}
-              renderInput={(params) => (
-                <TextField {...params} label="Select when you ate this item" sx={{label: {fontFamily}, label: {fontSize}, label: {fontWeight}}} />
-              )}
-            />
-         
-        </Grid>
-        <Grid item xs={8}></Grid>
+
         <Grid item xs={3}>
-          {searchStarted && (
-            <Box sx={{ display: "flex", margin: "1rem" }}>
-              <CircularProgress />
-            </Box>
-          )}
-          {loaded && (
-            <ListDividers
-              text={subs[0].text}
-              calories={subs[0].calories}
-              protein={subs[0].protein}
-              fat={subs[0].fat}
-            ></ListDividers>
-          )}
+          <Autocomplete
+            value={value}
+            onChange={(event, newValue) => {
+              setValue(newValue);
+            }}
+            inputValue={inputValue}
+            onInputChange={(event, newInputValue) => {
+              setInputValue(newInputValue);
+            }}
+            id="controllable-states-demo"
+            options={options}
+            sx={{ width: 300 }}
+            renderInput={(params) => (
+              <TextField {...params} label="Select when you ate this item" />
+            )}
+          />
         </Grid>
-        <Grid item xs={9}>
-          <Box style={boxStyle1}>
-            <Box style={boxStyle2}>
-              <Typography variant="primary">Total Calories</Typography>
-              {loaded && <Typography> {subs[0].calories}</Typography>}
-            </Box>
-            &nbsp;
-            <DesktopDatePicker
-              label="Please enter a date"
-              value={dateSelected}
-              maxDate={new Date()}
-              minDate={new Date('2021-12-01')}
-              onChange={(newValue) => {
-                setDateSelected(newValue);
-              }}
-              renderInput={(params) => <TextField {...params} sx={{label: {fontFamily}, label: {fontSize}, label: {fontWeight}}}/>}
-            />
-            <Button
-              variant="contained"
-              style={buttonStyle2}
-              onClick={iAteThisThing}
-            >
-              Submit Entry
-            </Button>
+        <Grid item xs={5}>
+          <DesktopDatePicker
+            label="Please enter a date"
+            value={dateSelected}
+            maxDate={new Date()}
+            minDate={new Date("2021-12-01")}
+            onChange={(newValue) => {
+              setDateSelected(newValue);
+            }}
+            renderInput={(params) => <TextField {...params} />}
+          />
+        </Grid>
+        <Grid item xs={12}></Grid>
+        <Grid item xs={12}></Grid>
+        {searchStarted && (
+          <Box sx={{ display: "flex", margin: "1rem" }}>
+            <CircularProgress />
           </Box>
-        </Grid>
+        )}
+        {loaded &&
+          subs.map((data) => (
+            <Grid item xs={3}>
+              <ListDividers
+                iAteThisThing={iAteThisThing}
+                key={data.foodId}
+                text={data.text}
+                calories={data.calories}
+                protein={data.protein}
+                fat={data.fat}
+                carbs={data.carbs}
+                fiber={data.fiber}
+                category={data.category}
+              ></ListDividers>
+            </Grid>
+          ))}
+
         <Grid item xs={12}>
           {displayAlert && <DescriptionAlerts severity="success" />}
           {displaySearchAlert && (
