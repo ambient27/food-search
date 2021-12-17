@@ -31,14 +31,15 @@ const MainNavigation = () => {
     marginLeft: "auto",
     maxWidth: "100%",
     height: "65px",
-  }
+  };
 
   return (
-    <AppBar
-      position="fixed"
-      sx={AppBarStyle}
-    >
-      <Stack direction="row" justifyContent="flex-start" alignItems="flex-start">
+    <AppBar position="fixed" sx={AppBarStyle}>
+      <Stack
+        direction="row"
+        justifyContent="flex-start"
+        alignItems="flex-start"
+      >
         <Button variant="outlined" sx={navButtonStyle}>
           <Link to="newentry" style={linkStyle}>
             Add New Entry
@@ -52,6 +53,11 @@ const MainNavigation = () => {
         <Button variant="outlined" sx={navButtonStyle}>
           <Link to="mealplan" style={linkStyle}>
             Meal Plan
+          </Link>
+        </Button>
+        <Button variant="outlined" sx={navButtonStyle}>
+          <Link to="goals" style={linkStyle}>
+            Goals
           </Link>
         </Button>
         <Button variant="outlined" sx={navButtonStyle}>

@@ -17,14 +17,8 @@ const MealPlan = () => {
       <Button
         sx={{
           margin: "1rem",
-          borderRadius: "25px",
           backgroundColor: "#9F5C2D",
-          fontFamily: "Merriweather",
-          fontStyle: "normal",
-          fontVariant: "normal",
           color: "black",
-          fontWeight: "700",
-          lineHeight: "26.4px",
         }}
         variant="contained"
         onClick={dumbClickHandler}

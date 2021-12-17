@@ -9,7 +9,7 @@ import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import SignIn from "./pages/SignIn";
 import { UserProvider } from "./store/UserContext";
-
+import Goals from "./pages/Goals";
 
 const theme = createTheme({
   palette: {
@@ -19,7 +19,7 @@ const theme = createTheme({
     },
   },
   typography: {
-      primary: {
+    primary: {
       fontFamily: "Roboto",
       color: "black",
       fontSize: 25,
@@ -37,44 +37,50 @@ const theme = createTheme({
       fontSize: 18,
       fontWeight: 700,
     },
-    button:{
+    button: {
       fontFamily: "Roboto",
       fontSize: 20,
       fontWeight: 700,
-    }, 
-    textfield:{
+    },
+    textfield: {
       fontFamily: "Roboto",
       fontSize: 25,
       fontWeight: 700,
-    }
+    },
   },
-components:{
-  textfield:{
-    styleOverrides: {
-      root: {
-    fontFamily: "Roboto",
-    fontSize: 25,
-    fontWeight: 700,
-    }}
-  }}
-
+  components: {
+    textfield: {
+      styleOverrides: {
+        root: {
+          fontFamily: "Roboto",
+          fontSize: 25,
+          fontWeight: 700,
+        },
+      },
+    },
+  },
 });
 
 const App = () => {
-    return (
+  const [calGoal, setCalGoal] = React.useState(2000);
+
+  return (
     <>
       <UserProvider>
         <ThemeProvider theme={theme}>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <Routes>
               <Route path="/" element={<Layout position="fixed" />}>
+                <Route path="newentry" element={<NewEntry />}></Route>
                 <Route
-                  path="newentry"
-                  element={<NewEntry/>}
-                >
-                </Route>
-                <Route path="mytracker" element={<MyTracker />}></Route>
+                  path="mytracker"
+                  element={<MyTracker calGoal={calGoal} />}
+                ></Route>
                 <Route path="mealplan" element={<MealPlan />}></Route>
+                <Route
+                  path="goals"
+                  element={<Goals setCalGoal={setCalGoal} />}
+                ></Route>
                 <Route path="signin" element={<SignIn />}></Route>
               </Route>
             </Routes>

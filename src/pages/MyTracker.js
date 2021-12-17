@@ -15,15 +15,27 @@ import { Typography, Box, Stack, TextField } from "@mui/material";
 import { DesktopDatePicker } from "@mui/lab";
 import LinearProgress from "@mui/material/LinearProgress";
 
-const MyTracker = () => {
+const MyTracker = (props) => {
   const { user } = React.useContext(UserContext);
   const [entries, setEntries] = React.useState([]);
   const [dateSelected, setDateSelected] = React.useState(new Date());
   const [progress, setProgress] = React.useState(0);
+  const [realProgress, setRealProgress] = React.useState(0);
+
+  const maxOneHundred = props.calGoal / 100;
 
   const trackDeleteHandler = (data) => {
     deleteDoc(doc(firebase.db, "food-entries", `${data.id}`));
     setEntries(entries.filter((entry) => entry.id !== data.id));
+    const newProg = realProgress - data.data.kcal;
+    console.log(newProg);
+
+    if (newProg / maxOneHundred >= 100) {
+      setProgress(100);
+    } else {
+      setProgress(newProg / maxOneHundred);
+    }
+    setRealProgress(newProg);
   };
 
   React.useEffect(() => {
@@ -32,11 +44,9 @@ const MyTracker = () => {
 
       dateSelected.setHours(0, 0, 0, 0);
       const startInMs = dateSelected.getTime();
-      console.log(startInMs);
 
       dateSelected.setHours(23, 59, 59, 999);
       const endInMs = dateSelected.getTime();
-      console.log(endInMs);
 
       const startDate = new Date(startInMs);
       const endDate = new Date(endInMs);
@@ -62,14 +72,15 @@ const MyTracker = () => {
 
         const setSum = fetchedCalories.reduce(reducer, 0);
         setEntries(fetchedEntries);
-        if (setSum / 20 >= 100) {
+        if (setSum / maxOneHundred >= 100) {
           setProgress(100);
         } else {
-          setProgress(setSum / 20);
+          setProgress(setSum / maxOneHundred);
         }
+        setRealProgress(setSum);
       })();
     }
-  }, [user?.user?.uid, dateSelected]);
+  }, [user?.user?.uid, dateSelected, maxOneHundred]);
 
   return (
     <Grid container direction="row" spacing={2}>
@@ -89,13 +100,13 @@ const MyTracker = () => {
       </Grid>
       <Grid item xs={2} md={6}>
         <Typography variant="smalltext">
-          Calories % of goal out of 2000
+          Calories % of goal out of {props.calGoal}
         </Typography>
         <Box sx={{ width: "300px" }}>
           <LinearProgress
             variant="determinate"
             value={progress}
-            valueBuffer="0"
+            valueBuffer={0}
           />
         </Box>
       </Grid>
@@ -128,10 +139,8 @@ const MyTracker = () => {
             <Button
               onClick={() => trackDeleteHandler(data)}
               sx={{
-                borderRadius: "25px",
                 backgroundColor: "#9F5C2D",
                 color: "black",
-                margin: "1rem",
                 "&:hover": {
                   backgroundColor: "red",
                 },
