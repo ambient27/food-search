@@ -81,16 +81,10 @@ const NewEntry = () => {
 
   const iAteThisThing = async (props) => {
     const foodEntriesRef = collection(firebase.db, "food-entries");
-    const dateObj = dateSelected;
-    const month = dateObj.getUTCMonth() + 1; //months from 1-12
-    const day = dateObj.getUTCDate() - 1;
-    const year = dateObj.getUTCFullYear();
-
-    const newdate = year + "/" + month + "/" + day;
 
     await setDoc(doc(foodEntriesRef), {
       category: props[0].category,
-      date: newdate,
+      date: dateSelected,
       fat: props[0].fat,
       protein: props[0].protein,
       label: props[0].item,
@@ -159,8 +153,8 @@ const NewEntry = () => {
           </Box>
         )}
         {loaded &&
-          subs.map((data) => (
-            <Grid item xs={3}>
+          subs.map((data, idx) => (
+            <Grid item xs={3} key={idx}>
               <ListDividers
                 iAteThisThing={iAteThisThing}
                 key={data.foodId}

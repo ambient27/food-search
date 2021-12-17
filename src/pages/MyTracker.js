@@ -30,50 +30,52 @@ const MyTracker = () => {
     if (user?.user?.uid) {
       const entriesRef = collection(firebase.db, "food-entries");
 
-      const dateObj = dateSelected;
-      const month = dateObj.getUTCMonth() + 1; //months from 1-12
-      const day = dateObj.getUTCDate() - 1;
-      const year = dateObj.getUTCFullYear();
+      dateSelected.setHours(0, 0, 0, 0);
+      const startInMs = dateSelected.getTime();
+      console.log(startInMs);
 
-      const newdate = year + "/" + month + "/" + day;
+      dateSelected.setHours(23, 59, 59, 999);
+      const endInMs = dateSelected.getTime();
+      console.log(endInMs);
 
-      //const q = query(entriesRef, where("uid", "==", user?.user?.uid));
-      const qTwo = query(entriesRef, where("date", "==", newdate));
+      const startDate = new Date(startInMs);
+      const endDate = new Date(endInMs);
 
-      console.log(newdate);
+      const q = query(
+        entriesRef,
+        where("uid", "==", user?.user?.uid),
+        where("date", ">=", startDate),
+        where("date", "<", endDate)
+      );
 
       (async () => {
         const fetchedEntries = [];
         const fetchedCalories = [];
         const reducer = (accumulator, curr) => accumulator + curr;
 
-        const docs = await getDocs(qTwo);
+        const docs = await getDocs(q);
 
         docs.forEach((doc) => {
           fetchedEntries.push({ data: doc.data(), id: doc.id });
           fetchedCalories.push(doc.data().kcal);
         });
 
-        console.log(fetchedEntries);
-        console.log(fetchedCalories);
-
         const setSum = fetchedCalories.reduce(reducer, 0);
-
+        setEntries(fetchedEntries);
         if (setSum / 20 >= 100) {
           setProgress(100);
-          setEntries(fetchedEntries);
         } else {
           setProgress(setSum / 20);
-          setEntries(fetchedEntries);
         }
       })();
     }
   }, [user?.user?.uid, dateSelected]);
 
-  console.log(progress);
   return (
     <Grid container direction="row" spacing={2}>
-      <Grid item xs={4}>
+      <Grid item xs={12}></Grid>
+      <Grid item xs={1} md={2}></Grid>
+      <Grid item xs={2} md={4}>
         <DesktopDatePicker
           label="Please select a date to review entries"
           value={dateSelected}
@@ -85,7 +87,7 @@ const MyTracker = () => {
           renderInput={(params) => <TextField {...params} />}
         />
       </Grid>
-      <Grid item xs={8}>
+      <Grid item xs={2} md={6}>
         <Typography variant="smalltext">
           Calories % of goal out of 2000
         </Typography>
@@ -97,8 +99,8 @@ const MyTracker = () => {
           />
         </Box>
       </Grid>
-      {entries.map((data) => (
-        <Grid item xs={3} key={data.data.foodId}>
+      {entries.map((data, idx) => (
+        <Grid item xs={3} key={idx}>
           <Stack
             direction="column"
             justifyContent="center"
@@ -120,7 +122,9 @@ const MyTracker = () => {
             <Typography variant="secondary">
               Fiber - {data.data.fiber}
             </Typography>
-            <Typography variant="secondary">Date - {data.data.date}</Typography>
+            <Typography variant="secondary">
+              Date - {data.data.date.toDate().toLocaleDateString()}
+            </Typography>
             <Button
               onClick={() => trackDeleteHandler(data)}
               sx={{
