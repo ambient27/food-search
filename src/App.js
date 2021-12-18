@@ -30,7 +30,8 @@ const theme = createTheme({
     smallertext: {
       fontFamily: ["Roboto", "sans-serif"],
       color: "black",
-      fontSize: 18,
+      fontSize: 20,
+      fontWeight: 600,
     },
     button: {
       fontFamily: ["Roboto", "sans-serif"],

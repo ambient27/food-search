@@ -62,10 +62,7 @@ const MainNavigation = () => {
             Sign In
           </Link>
         </Button>
-        <Typography
-          variant="smallertext"
-          sx={{ margin: ".3rem", marginLeft: "auto" }}
-        >
+        <Typography variant="smallertext" sx={{ marginLeft: "auto" }}>
           Current userID: {user?.user?.uid}
         </Typography>
       </Stack>
