@@ -137,14 +137,8 @@ const MyTracker = (props) => {
               Date - {data.data.date.toDate().toLocaleDateString()}
             </Typography>
             <Button
+              variant="contained"
               onClick={() => trackDeleteHandler(data)}
-              sx={{
-                backgroundColor: "#9F5C2D",
-                color: "black",
-                "&:hover": {
-                  backgroundColor: "red",
-                },
-              }}
             >
               Remove Entry
             </Button>

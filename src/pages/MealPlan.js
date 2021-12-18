@@ -1,5 +1,7 @@
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
+import { Typography } from "@mui/material";
+import Box from "@mui/material/Box";
 
 const MealPlan = () => {
   const dumbClickHandler = () => {
@@ -12,19 +14,19 @@ const MealPlan = () => {
       <Grid item xs={12}></Grid>
       <Grid item xs={12}></Grid>
       <Grid item xs={12}></Grid>
-      <Grid item xs={1}></Grid>
-      <h1>Stop eating food</h1>
-      <Button
-        sx={{
-          margin: "1rem",
-          backgroundColor: "#9F5C2D",
-          color: "black",
-        }}
-        variant="contained"
-        onClick={dumbClickHandler}
-      >
-        Click here if you were expecting something different
-      </Button>
+      <Grid item xs={2}></Grid>
+      <Box>
+        <Typography variant="secondary">Stop eating food</Typography>
+        <Button
+          sx={{
+            margin: ".5rem",
+          }}
+          variant="contained"
+          onClick={dumbClickHandler}
+        >
+          Click here if you were expecting something different
+        </Button>
+      </Box>
     </Grid>
   );
 };

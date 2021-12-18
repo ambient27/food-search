@@ -104,8 +104,11 @@ const NewEntry = () => {
       <Grid container spacing={2}>
         <Grid item xs={12}></Grid>
         <Grid item xs={4}>
-          <Typography variant="secondary">Food you ate</Typography> &nbsp;
-          <input className="input_example" onChange={searchHandler}></input>
+          <TextField
+            onChange={searchHandler}
+            variant="filled"
+            label="Food you ate"
+          ></TextField>
           <Button
             sx={{ margin: ".5rem" }}
             variant="contained"
@@ -114,7 +117,6 @@ const NewEntry = () => {
             Search
           </Button>
         </Grid>
-
         <Grid item xs={3}>
           <Autocomplete
             value={value}
@@ -127,7 +129,6 @@ const NewEntry = () => {
             }}
             id="controllable-states-demo"
             options={options}
-            sx={{ width: 300 }}
             renderInput={(params) => (
               <TextField {...params} label="Select when you ate this item" />
             )}
@@ -148,10 +149,11 @@ const NewEntry = () => {
         <Grid item xs={12}></Grid>
         <Grid item xs={12}></Grid>
         {searchStarted && (
-          <Box sx={{ display: "flex", margin: "1rem" }}>
+          <Box>
             <CircularProgress />
           </Box>
         )}
+        <Grid item xs={12}></Grid>
         {loaded &&
           subs.map((data, idx) => (
             <Grid item xs={3} key={idx}>
@@ -172,7 +174,7 @@ const NewEntry = () => {
         <Grid item xs={12}>
           {displayAlert && <DescriptionAlerts severity="success" />}
           {displaySearchAlert && (
-            <Stack sx={{ width: "100%" }} spacing={2}>
+            <Stack spacing={2}>
               <Alert severity="warning">
                 <AlertTitle>Warning</AlertTitle>
                 Your search is invalid —{" "}

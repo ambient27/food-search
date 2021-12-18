@@ -10,22 +10,19 @@ const MainNavigation = () => {
   const { user } = React.useContext(UserContext);
 
   const linkStyle = {
+    fontFamily: ["Roboto", "sans-serif"],
     textDecoration: "none",
     color: "black",
-    lineHeight: "26.4px",
   };
 
   const navButtonStyle = {
     "&:hover": {
       backgroundColor: "#9F5C2D",
     },
-    borderStyle: "none",
-    backgroundColor: "#DBA380",
     height: "65px",
   };
 
   const AppBarStyle = {
-    backgroundColor: "#DBA380",
     minWidth: "500px",
     marginRight: "auto",
     marginLeft: "auto",

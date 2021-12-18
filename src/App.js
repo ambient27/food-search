@@ -14,49 +14,28 @@ import Goals from "./pages/Goals";
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#9F5C2D",
-      fontFamily: "Roboto",
+      main: "#C06F35",
+      fontFamily: ["Roboto", "sans-serif"],
+      contrastText: "black",
     },
   },
   typography: {
-    primary: {
-      fontFamily: "Roboto",
+    primary: {},
+    secondary: {
+      fontFamily: ["Roboto", "sans-serif"],
       color: "black",
       fontSize: 25,
-      fontWeight: 700,
-    },
-    secondary: {
-      fontFamily: "Roboto",
-      color: "black",
-      fontSize: 20,
       fontWeight: 600,
     },
     smallertext: {
-      fontFamily: "Roboto",
-      color: "white",
+      fontFamily: ["Roboto", "sans-serif"],
+      color: "black",
       fontSize: 18,
-      fontWeight: 700,
     },
     button: {
-      fontFamily: "Roboto",
+      fontFamily: ["Roboto", "sans-serif"],
       fontSize: 20,
-      fontWeight: 700,
-    },
-    textfield: {
-      fontFamily: "Roboto",
-      fontSize: 25,
-      fontWeight: 700,
-    },
-  },
-  components: {
-    textfield: {
-      styleOverrides: {
-        root: {
-          fontFamily: "Roboto",
-          fontSize: 25,
-          fontWeight: 700,
-        },
-      },
+      fontWeight: 600,
     },
   },
 });
@@ -71,7 +50,10 @@ const App = () => {
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <Routes>
               <Route path="/" element={<Layout position="fixed" />}>
-                <Route path="newentry" element={<NewEntry />}></Route>
+                <Route
+                  path="newentry"
+                  element={<NewEntry theme={theme} />}
+                ></Route>
                 <Route
                   path="mytracker"
                   element={<MyTracker calGoal={calGoal} />}
