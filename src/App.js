@@ -14,13 +14,19 @@ import Goals from "./pages/Goals";
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#C06F35",
-      fontFamily: ["Roboto", "sans-serif"],
+      main: "#4FBA52",
       contrastText: "black",
     },
+    secondary: {
+      main: "#6A5B6E",
+    },
+    background: {},
   },
   typography: {
-    primary: {},
+    fontFamily: ["Roboto", "sans-serif"].join(","),
+    primary: {
+      fontSize: 35,
+    },
     secondary: {
       fontFamily: ["Roboto", "sans-serif"],
       color: "black",
@@ -34,9 +40,12 @@ const theme = createTheme({
       fontWeight: 600,
     },
     button: {
-      fontFamily: ["Roboto", "sans-serif"],
       fontSize: 20,
       fontWeight: 600,
+      backgroundColor: "#4FBA52",
+      "&:hover": {
+        background: "#9F5C2D",
+      },
     },
   },
 });

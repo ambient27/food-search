@@ -5,8 +5,8 @@ const Layout = (props) => {
   return (
     <div>
       <MainNavigation position="fixed" />
-      <div style={{ height: 64, width: "100vw" }} />
-      <main>
+      <div style={{ height: 70, width: "100vw" }} />
+      <main style={{ paddingTop: "20px" }}>
         <Outlet />
       </main>
     </div>

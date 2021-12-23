@@ -11,10 +11,10 @@ import CircularProgress from "@mui/material/CircularProgress";
 import firebase from "../api/firebase";
 import { collection, doc, setDoc } from "firebase/firestore";
 import Autocomplete from "@mui/material/Autocomplete";
-import { Typography } from "@mui/material";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import Stack from "@mui/material/Stack";
+import Pagination from "@mui/material/Pagination";
 
 const isEmpty = (value) => value.trim() === "";
 const options = ["Breakfast", "Lunch", "Dinner", "Snacks"];
@@ -102,7 +102,6 @@ const NewEntry = () => {
   return (
     <>
       <Grid container spacing={2}>
-        <Grid item xs={12}></Grid>
         <Grid item xs={4}>
           <TextField
             onChange={searchHandler}
@@ -146,17 +145,18 @@ const NewEntry = () => {
             renderInput={(params) => <TextField {...params} />}
           />
         </Grid>
-        <Grid item xs={12}></Grid>
-        <Grid item xs={12}></Grid>
         {searchStarted && (
-          <Box>
-            <CircularProgress />
-          </Box>
+          <Grid item xs={12}>
+            <Grid item xs={4}>
+              <Box sx={{ display: "flex" }}>
+                <CircularProgress size={60} thickness={8} />
+              </Box>
+            </Grid>
+          </Grid>
         )}
-        <Grid item xs={12}></Grid>
         {loaded &&
           subs.map((data, idx) => (
-            <Grid item xs={3} key={idx}>
+            <Grid item xs={12} md={3} sm={6} key={idx}>
               <ListDividers
                 iAteThisThing={iAteThisThing}
                 key={data.foodId}
@@ -171,6 +171,14 @@ const NewEntry = () => {
             </Grid>
           ))}
 
+        {loaded && (
+          <>
+            <Grid item xs={4}></Grid>
+            <Grid item xs={6}>
+              <Pagination count={10} />
+            </Grid>
+          </>
+        )}
         <Grid item xs={12}>
           {displayAlert && <DescriptionAlerts severity="success" />}
           {displaySearchAlert && (

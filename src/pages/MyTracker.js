@@ -84,9 +84,8 @@ const MyTracker = (props) => {
 
   return (
     <Grid container direction="row" spacing={2}>
-      <Grid item xs={12}></Grid>
-      <Grid item xs={1} md={2}></Grid>
-      <Grid item xs={2} md={4}>
+      <Grid item xs={12} sm={3} md={2}></Grid>
+      <Grid item xs={12} sm={3} md={4}>
         <DesktopDatePicker
           label="Please select a date to review entries"
           value={dateSelected}
@@ -98,8 +97,8 @@ const MyTracker = (props) => {
           renderInput={(params) => <TextField {...params} />}
         />
       </Grid>
-      <Grid item xs={2} md={6}>
-        <Typography variant="smalltext">
+      <Grid item xs={2} sm={3} md={6}>
+        <Typography variant="smalltext" align="center">
           Calories % of goal out of {props.calGoal}
         </Typography>
         <Box sx={{ width: "300px" }}>
@@ -111,13 +110,8 @@ const MyTracker = (props) => {
         </Box>
       </Grid>
       {entries.map((data, idx) => (
-        <Grid item xs={3} key={idx}>
-          <Stack
-            direction="column"
-            justifyContent="center"
-            alignItems="center"
-            spacing={1}
-          >
+        <Grid item xs={12} md={3} sm={6} key={idx}>
+          <Stack direction="column" justifyContent="center" alignItems="center">
             <Typography variant="secondary">
               Item - {data.data.label}
             </Typography>

@@ -12,6 +12,17 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 
+import {
+  collection,
+  deleteDoc,
+  getDocs,
+  query,
+  where,
+  doc,
+  setDoc,
+} from "firebase/firestore";
+import firebase from "../api/firebase";
+
 function Copyright(props) {
   return (
     <Typography variant="body2" align="center" {...props}>
@@ -25,17 +36,7 @@ function Copyright(props) {
   );
 }
 
-export default function SignIn() {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    // eslint-disable-next-line no-console
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
-  };
-
+export default function SignIn(props) {
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -53,7 +54,12 @@ export default function SignIn() {
         <Typography component="h1" variant="smallText">
           Sign in
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+        <Box
+          component="form"
+          onSubmit={() => props.handleSubmit()}
+          noValidate
+          sx={{ mt: 1 }}
+        >
           <TextField
             variant="filled"
             margin="normal"

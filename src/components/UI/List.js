@@ -6,34 +6,17 @@ import Divider from "@mui/material/Divider";
 import { Typography } from "@mui/material";
 import { Button } from "@mui/material";
 
+//bgcolor: "#DBA380",
+
 const style = {
-  width: "100%",
-  maxWidth: 360,
   bgcolor: "#DBA380",
   borderRadius: "25px",
   borderStyle: "solid",
   textAlign: "center",
+  maxHeight: "auto",
 };
 
 export default function ListDividers(props) {
-  const itemStartText = "Item: ";
-  const itemSelected = itemStartText.concat(props.text);
-
-  const itemStartCalories = "Calories: ";
-  const caloriesSelected = itemStartCalories.concat(props.calories);
-
-  const itemStartProtein = "Protein in grams: ";
-  const proteinSelected = itemStartProtein.concat(props.protein);
-
-  const itemStartFat = "Fat in grams: ";
-  const fatSelected = itemStartFat.concat(props.fat);
-
-  const itemStartCarbs = "Carbs in grams: ";
-  const carbsSelected = itemStartCarbs.concat(props.carbs);
-
-  const itemStartFiber = "Fiber in grams: ";
-  const fiberSelected = itemStartFiber.concat(props.fiber);
-
   const selectThisOne = () => {
     const emptyArray = [];
     const itemPickedArray = [
@@ -51,31 +34,58 @@ export default function ListDividers(props) {
     props.iAteThisThing(itemPickedArray);
   };
 
+  const truncate = (str, n) => {
+    return str?.length > n ? str.substr(0, n - 1) + "..." : str;
+  };
+
   return (
     <>
       <List sx={style} component="nav" aria-label="mailbox folders">
         <ListItem>
           <ListItemText
-            disableTypography
             primary={
-              <Typography variant="secondary">{itemSelected}</Typography>
+              <Typography variant="secondary">
+                {truncate(props.text, 20)}
+              </Typography>
             }
           />
         </ListItem>
         <Divider />
         <ListItem divider>
           <ListItemText
-            disableTypography
             primary={
-              <Typography variant="secondary">{caloriesSelected}</Typography>
+              <Typography variant="secondary">
+                {"Calories(kcal) ".concat(props.calories)}
+              </Typography>
             }
           />
         </ListItem>
         <ListItem>
           <ListItemText
-            disableTypography
             primary={
-              <Typography variant="secondary">{proteinSelected}</Typography>
+              <Typography variant="secondary">
+                {"Protein(g) ".concat(props.protein)}
+              </Typography>
+            }
+          />
+        </ListItem>
+        <Divider light />
+        <ListItem>
+          <ListItemText
+            primary={
+              <Typography variant="secondary">
+                {"Fat(g) ".concat(props.fat)}
+              </Typography>
+            }
+          />
+        </ListItem>
+        <Divider light />
+        <ListItem>
+          <ListItemText
+            primary={
+              <Typography variant="secondary">
+                {"Carbs(g) ".concat(props.carbs)}
+              </Typography>
             }
           />
         </ListItem>
@@ -83,24 +93,10 @@ export default function ListDividers(props) {
         <ListItem>
           <ListItemText
             disableTypography
-            primary={<Typography variant="secondary">{fatSelected}</Typography>}
-          />
-        </ListItem>
-        <Divider light />
-        <ListItem>
-          <ListItemText
-            disableTypography
             primary={
-              <Typography variant="secondary">{carbsSelected}</Typography>
-            }
-          />
-        </ListItem>
-        <Divider light />
-        <ListItem>
-          <ListItemText
-            disableTypography
-            primary={
-              <Typography variant="secondary">{fiberSelected}</Typography>
+              <Typography variant="secondary">
+                {"Fiber(g) ".concat(props.fiber)}
+              </Typography>
             }
           />
         </ListItem>
