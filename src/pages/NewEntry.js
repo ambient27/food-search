@@ -43,13 +43,12 @@ const NewEntry = () => {
     }
 
     const url = `https://api.edamam.com/api/food-database/v2/parser?app_id=08ccfbe5&app_key=%20fc8b065b7c50db00c72dd76e96abb3ca&ingr=${selectedSearch}&nutrition-type=cooking`;
-
     try {
       const response = await fetch(url, {
         method: "GET",
       });
       if (!response.ok) {
-        throw new Error("Something went wrong!");
+        throw new Error("Please enter a valid search");
       }
       const responseData = await response.json();
       const loadedData = [];
@@ -107,12 +106,6 @@ const NewEntry = () => {
             onChange={searchHandler}
             variant="filled"
             label="Food you ate"
-            InputLabelProps={{
-              style: {
-                fontSize: 25,
-                fontFamily: ["Roboto", "sans-serif"].join(","),
-              },
-            }}
           ></TextField>
           <Button
             sx={{ margin: ".5rem" }}
@@ -135,16 +128,7 @@ const NewEntry = () => {
             id="controllable-states-demo"
             options={options}
             renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Select when you ate this item"
-                InputLabelProps={{
-                  style: {
-                    fontSize: 25,
-                    fontFamily: ["Roboto", "sans-serif"].join(","),
-                  },
-                }}
-              />
+              <TextField {...params} label="Select when you ate this item" />
             )}
           />
         </Grid>
@@ -157,17 +141,7 @@ const NewEntry = () => {
             onChange={(newValue) => {
               setDateSelected(newValue);
             }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                InputLabelProps={{
-                  style: {
-                    fontSize: 25,
-                    fontFamily: ["Roboto", "sans-serif"].join(","),
-                  },
-                }}
-              />
-            )}
+            renderInput={(params) => <TextField {...params} />}
           />
         </Grid>
         {searchStarted && (

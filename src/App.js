@@ -10,6 +10,7 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import SignIn from "./pages/SignIn";
 import { UserProvider } from "./store/UserContext";
 import Goals from "./pages/Goals";
+import WeeklyGoal from "./pages/WeeklyGoal";
 
 const theme = createTheme({
   palette: {
@@ -76,6 +77,7 @@ const App = () => {
                   element={<Goals setCalGoal={setCalGoal} />}
                 ></Route>
                 <Route path="signin" element={<SignIn />}></Route>
+                <Route path="weeklygoal" element={<WeeklyGoal />}></Route>
               </Route>
             </Routes>
           </LocalizationProvider>

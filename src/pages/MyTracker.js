@@ -14,6 +14,7 @@ import UserContext from "../store/UserContext";
 import { Typography, Box, Stack, TextField } from "@mui/material";
 import { DesktopDatePicker } from "@mui/lab";
 import LinearProgress from "@mui/material/LinearProgress";
+import { useNavigate } from "react-router-dom";
 
 const MyTracker = (props) => {
   const { user } = React.useContext(UserContext);
@@ -23,6 +24,7 @@ const MyTracker = (props) => {
   const [realProgress, setRealProgress] = React.useState(0);
 
   const maxOneHundred = props.calGoal / 100;
+  const navigate = useNavigate();
 
   const trackDeleteHandler = (data) => {
     deleteDoc(doc(firebase.db, "food-entries", `${data.id}`));
@@ -39,7 +41,8 @@ const MyTracker = (props) => {
   };
 
   const showWeekly = () => {
-    console.log("worked");
+    navigate("../weeklygoal", { replace: true });
+    console.log("hi");
   };
 
   React.useEffect(() => {
@@ -98,17 +101,7 @@ const MyTracker = (props) => {
           onChange={(newValue) => {
             setDateSelected(newValue);
           }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              InputLabelProps={{
-                style: {
-                  fontSize: 25,
-                  fontFamily: ["Roboto", "sans-serif"].join(","),
-                },
-              }}
-            />
-          )}
+          renderInput={(params) => <TextField {...params} />}
         />
       </Grid>
       <Grid item xs={12} sm={3} md={4}>
