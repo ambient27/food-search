@@ -107,6 +107,12 @@ const NewEntry = () => {
             onChange={searchHandler}
             variant="filled"
             label="Food you ate"
+            InputLabelProps={{
+              style: {
+                fontSize: 25,
+                fontFamily: ["Roboto", "sans-serif"].join(","),
+              },
+            }}
           ></TextField>
           <Button
             sx={{ margin: ".5rem" }}
@@ -129,7 +135,16 @@ const NewEntry = () => {
             id="controllable-states-demo"
             options={options}
             renderInput={(params) => (
-              <TextField {...params} label="Select when you ate this item" />
+              <TextField
+                {...params}
+                label="Select when you ate this item"
+                InputLabelProps={{
+                  style: {
+                    fontSize: 25,
+                    fontFamily: ["Roboto", "sans-serif"].join(","),
+                  },
+                }}
+              />
             )}
           />
         </Grid>
@@ -142,7 +157,17 @@ const NewEntry = () => {
             onChange={(newValue) => {
               setDateSelected(newValue);
             }}
-            renderInput={(params) => <TextField {...params} />}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                InputLabelProps={{
+                  style: {
+                    fontSize: 25,
+                    fontFamily: ["Roboto", "sans-serif"].join(","),
+                  },
+                }}
+              />
+            )}
           />
         </Grid>
         {searchStarted && (

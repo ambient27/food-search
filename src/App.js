@@ -22,16 +22,15 @@ const theme = createTheme({
     },
     background: {},
   },
+
   typography: {
     fontFamily: ["Roboto", "sans-serif"].join(","),
-    primary: {
-      fontSize: 35,
-    },
+    htmlFontSize: 10,
+    primary: {},
     secondary: {
       fontFamily: ["Roboto", "sans-serif"],
       color: "black",
       fontSize: 25,
-      fontWeight: 600,
     },
     smallertext: {
       fontFamily: ["Roboto", "sans-serif"],
@@ -39,13 +38,16 @@ const theme = createTheme({
       fontSize: 20,
       fontWeight: 600,
     },
-    button: {
-      fontSize: 20,
+    logo: {
+      fontFamily: "Open-Sans",
+      color: "black",
+      fontSize: 35,
       fontWeight: 600,
-      backgroundColor: "#4FBA52",
-      "&:hover": {
-        background: "#9F5C2D",
-      },
+      marginLeft: "5px",
+    },
+    button: {
+      fontSize: 22,
+      fontWeight: 600,
     },
   },
 });

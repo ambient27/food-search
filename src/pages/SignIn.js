@@ -1,7 +1,6 @@
 import * as React from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
@@ -11,17 +10,6 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-
-import {
-  collection,
-  deleteDoc,
-  getDocs,
-  query,
-  where,
-  doc,
-  setDoc,
-} from "firebase/firestore";
-import firebase from "../api/firebase";
 
 function Copyright(props) {
   return (
@@ -39,10 +27,8 @@ function Copyright(props) {
 export default function SignIn(props) {
   return (
     <Container component="main" maxWidth="xs">
-      <CssBaseline />
       <Box
         sx={{
-          marginTop: 8,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -51,7 +37,7 @@ export default function SignIn(props) {
         <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
           <LockOutlinedIcon />
         </Avatar>
-        <Typography component="h1" variant="smallText">
+        <Typography component="h1" variant="smallertext">
           Sign in
         </Typography>
         <Box

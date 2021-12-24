@@ -4,10 +4,12 @@ import Button from "@mui/material/Button";
 import AppBar from "@mui/material/AppBar";
 import Stack from "@mui/material/Stack";
 import UserContext from "../../store/UserContext";
-import { Typography } from "@mui/material";
 import PositionedMenu from "./Menu";
 import Avatar from "@mui/material/Avatar";
 import { Box } from "@mui/system";
+import logoImage from "../../assets/egglogo.jpg";
+import { Paper } from "@mui/material";
+import { Typography } from "@mui/material";
 
 const MainNavigation = () => {
   const { user } = React.useContext(UserContext);
@@ -18,7 +20,7 @@ const MainNavigation = () => {
   };
 
   const navButtonStyle = {
-    height: "65px",
+    height: "75px",
     "&:hover": {
       background: "#7BCC7E",
     },
@@ -40,6 +42,19 @@ const MainNavigation = () => {
         alignItems="flex-start"
       >
         <PositionedMenu sx={{ display: { sm: "none", xs: "block" } }} />
+        <Paper variant="elevation" sx={{ height: "49px", width: "75px" }}>
+          <img
+            alt="logo"
+            src={logoImage}
+            id="logo"
+            width="75px"
+            height="75px"
+          />
+        </Paper>
+        <Stack direction="column">
+          <Typography variant="logo">Eat</Typography>
+          <Typography variant="logo">Less</Typography>
+        </Stack>
         <Button
           variant="outlinedInherit"
           style={navButtonStyle}

@@ -38,6 +38,10 @@ const MyTracker = (props) => {
     setRealProgress(newProg);
   };
 
+  const showWeekly = () => {
+    console.log("worked");
+  };
+
   React.useEffect(() => {
     if (user?.user?.uid) {
       const entriesRef = collection(firebase.db, "food-entries");
@@ -84,21 +88,31 @@ const MyTracker = (props) => {
 
   return (
     <Grid container direction="row" spacing={2}>
-      <Grid item xs={12} sm={3} md={2}></Grid>
-      <Grid item xs={12} sm={3} md={4}>
+      <Grid item xs={12} sm={2} md={3}>
         <DesktopDatePicker
           label="Please select a date to review entries"
+          sx={{ fontSize: 14 }}
           value={dateSelected}
           maxDate={new Date()}
           minDate={new Date("2021-12-01")}
           onChange={(newValue) => {
             setDateSelected(newValue);
           }}
-          renderInput={(params) => <TextField {...params} />}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              InputLabelProps={{
+                style: {
+                  fontSize: 25,
+                  fontFamily: ["Roboto", "sans-serif"].join(","),
+                },
+              }}
+            />
+          )}
         />
       </Grid>
-      <Grid item xs={2} sm={3} md={6}>
-        <Typography variant="smalltext" align="center">
+      <Grid item xs={12} sm={3} md={4}>
+        <Typography variant="smallertext" align="center">
           Calories % of goal out of {props.calGoal}
         </Typography>
         <Box sx={{ width: "300px" }}>
@@ -108,6 +122,12 @@ const MyTracker = (props) => {
             valueBuffer={0}
           />
         </Box>
+      </Grid>
+
+      <Grid item xs={12} sm={3} md={4}>
+        <Button variant="contained" onClick={showWeekly}>
+          Show me Weekly Goal Data
+        </Button>
       </Grid>
       {entries.map((data, idx) => (
         <Grid item xs={12} md={3} sm={6} key={idx}>
