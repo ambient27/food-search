@@ -21,6 +21,7 @@ const MyTracker = (props) => {
   const [entries, setEntries] = React.useState([]);
   const [dateSelected, setDateSelected] = React.useState(new Date());
   const [progress, setProgress] = React.useState(0);
+  const [weightEntered, setWeightEntered] = React.useState(0);
   const [realProgress, setRealProgress] = React.useState(0);
 
   const maxOneHundred = props.calGoal / 100;
@@ -48,6 +49,7 @@ const MyTracker = (props) => {
   React.useEffect(() => {
     if (user?.user?.uid) {
       const entriesRef = collection(firebase.db, "food-entries");
+      const weightRef = collection(firebase.db, "weight-entries");
 
       dateSelected.setHours(0, 0, 0, 0);
       const startInMs = dateSelected.getTime();
@@ -65,19 +67,34 @@ const MyTracker = (props) => {
         where("date", "<", endDate)
       );
 
+      const qTwo = query(
+        weightRef,
+        where("uid", "==", user?.user?.uid),
+        where("date", ">=", startDate),
+        where("date", "<", endDate)
+      );
+
       (async () => {
         const fetchedEntries = [];
         const fetchedCalories = [];
+        const fetchedWeight = [];
         const reducer = (accumulator, curr) => accumulator + curr;
 
         const docs = await getDocs(q);
+        const docsTwo = await getDocs(qTwo);
 
         docs.forEach((doc) => {
           fetchedEntries.push({ data: doc.data(), id: doc.id });
           fetchedCalories.push(doc.data().kcal);
         });
 
+        docsTwo.forEach((doc) => {
+          fetchedWeight.push(doc.data().weight);
+        });
+
+        setWeightEntered(fetchedWeight);
         const setSum = fetchedCalories.reduce(reducer, 0);
+
         setEntries(fetchedEntries);
         if (setSum / maxOneHundred >= 100) {
           setProgress(100);
@@ -104,7 +121,7 @@ const MyTracker = (props) => {
           renderInput={(params) => <TextField {...params} />}
         />
       </Grid>
-      <Grid item xs={12} sm={3} md={4}>
+      <Grid item xs={12} sm={3} md={3}>
         <Typography variant="smallertext" align="center">
           Calories % of goal out of {props.calGoal}
         </Typography>
@@ -116,8 +133,11 @@ const MyTracker = (props) => {
           />
         </Box>
       </Grid>
+      <Grid item xs={12} sm={3} md={3}>
+        <Typography>Weight entry: {weightEntered[0]}</Typography>
+      </Grid>
 
-      <Grid item xs={12} sm={3} md={4}>
+      <Grid item xs={12} sm={3} md={3}>
         <Button variant="contained" onClick={showWeekly}>
           Show me Weekly Goal Data
         </Button>

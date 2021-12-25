@@ -23,13 +23,14 @@ const NewEntry = () => {
   const { user } = React.useContext(UserContext);
   const [subs, setSubs] = React.useState([]);
   const [loaded, isLoaded] = React.useState(false);
-  const [selectedSearch, isSearching] = React.useState("");
+  const [selectedSearch, setSelectedSearch] = React.useState("");
   const [dateSelected, setDateSelected] = React.useState(new Date());
   const [searchStarted, setSearchStarted] = React.useState(false);
   const [value, setValue] = React.useState(options[0]);
   const [inputValue, setInputValue] = React.useState("");
   const [displayAlert, setDisplayAlert] = React.useState(false);
   const [displaySearchAlert, setDisplaySearchAlert] = React.useState(false);
+  const [weightSelected, setWeightSelected] = React.useState();
 
   const fetchMeals = async (event) => {
     event.preventDefault();
@@ -75,7 +76,23 @@ const NewEntry = () => {
 
   const searchHandler = (event) => {
     setDisplayAlert(false);
-    isSearching(event.target.value);
+    setSelectedSearch(event.target.value);
+  };
+
+  const weightAmountHandler = (event) => {
+    setWeightSelected(event.target.value);
+  };
+
+  const weightHandler = async (props) => {
+    const weightEntriesRef = collection(firebase.db, "weight-entries");
+
+    await setDoc(doc(weightEntriesRef), {
+      uid: user?.user?.uid,
+      date: dateSelected,
+      weight: weightSelected,
+    });
+    isLoaded(false);
+    setDisplayAlert(true);
   };
 
   const iAteThisThing = async (props) => {
@@ -100,13 +117,15 @@ const NewEntry = () => {
 
   return (
     <>
-      <Grid container spacing={2}>
-        <Grid item xs={4}>
+      <Grid container spacing={1}>
+        <Grid item xs={6} sm={2}>
           <TextField
             onChange={searchHandler}
             variant="filled"
             label="Food you ate"
           ></TextField>
+        </Grid>
+        <Grid item xs={6} sm={2}>
           <Button
             sx={{ margin: ".5rem" }}
             variant="contained"
@@ -115,7 +134,7 @@ const NewEntry = () => {
             Search
           </Button>
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={6} sm={2}>
           <Autocomplete
             value={value}
             onChange={(event, newValue) => {
@@ -132,9 +151,9 @@ const NewEntry = () => {
             )}
           />
         </Grid>
-        <Grid item xs={5}>
+        <Grid item xs={6} sm={2}>
           <DesktopDatePicker
-            label="Please enter a date"
+            label="Please select a date"
             value={dateSelected}
             maxDate={new Date()}
             minDate={new Date("2021-12-01")}
@@ -143,6 +162,22 @@ const NewEntry = () => {
             }}
             renderInput={(params) => <TextField {...params} />}
           />
+        </Grid>
+        <Grid item xs={6} sm={2}>
+          <TextField
+            onChange={weightAmountHandler}
+            variant="filled"
+            label="Weight"
+          ></TextField>
+        </Grid>
+        <Grid item xs={6} sm={2}>
+          <Button
+            sx={{ margin: ".5rem" }}
+            variant="contained"
+            onClick={weightHandler}
+          >
+            Add weight entry
+          </Button>
         </Grid>
         {searchStarted && (
           <Grid item xs={12}>
