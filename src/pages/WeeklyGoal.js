@@ -3,66 +3,68 @@ import LinearProgress from "@mui/material/LinearProgress";
 import React from "react";
 import { Box } from "@mui/system";
 import { Stack } from "@mui/material";
-import {
-  collection,
-  deleteDoc,
-  getDocs,
-  query,
-  where,
-  doc,
-} from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import firebase from "../api/firebase";
 import UserContext from "../store/UserContext";
 
 const WeeklyGoal = () => {
-  const [progress, setProgress] = React.useState(75);
-  const [entries, setEntries] = React.useState([]);
-  const [realProgress, setRealProgress] = React.useState(0);
+  const [progress, setProgress] = React.useState([0, 0, 0, 0, 0, 0, 0]);
+  const [mondayProgress, setMondayProgress] = React.useState(0);
+  const [tuesdayProgress, setTuesdayProgress] = React.useState(0);
+  const [wednesdayProgress, setWednesdayProgress] = React.useState(0);
+  const [thursdayProgress, setThursdayProgress] = React.useState(0);
+  const [fridayProgress, setFridayProgress] = React.useState(0);
+  const [saturdayProgress, setSaturdayProgress] = React.useState(0);
+  const [sundayProgress, setSundayProgress] = React.useState(5);
+
   const { user } = React.useContext(UserContext);
 
   React.useEffect(() => {
     if (user?.user?.uid) {
-      const maxOneHundred = 20 / 100;
-      const currentDay = new Date();
       const entriesRef = collection(firebase.db, "food-entries");
+      const currentDay = new Date();
       currentDay.setHours(0, 0, 0, 0);
-      const startInMs = currentDay.getTime();
-
+      let startInMs = currentDay.getTime();
       currentDay.setHours(23, 59, 59, 999);
-      const endInMs = currentDay.getTime();
+      let endInMs = currentDay.getTime();
+      const curDay = currentDay.getDay();
+      console.log(curDay);
 
-      const startDate = new Date(startInMs);
-      const endDate = new Date(endInMs);
+      if (curDay > 0) {
+        startInMs -= curDay * 86400000;
+      }
+      if (curDay < 6) {
+        endInMs += (6 - curDay) * 86400000;
+      }
 
-      console.log(endDate);
-      const q = query(
-        entriesRef,
-        where("uid", "==", user?.user?.uid),
-        where("date", ">=", startDate),
-        where("date", "<", endDate)
-      );
+      for (let i = 0; i < 7; i++) {
+        const initialDate = new Date(startInMs + i * 86400000);
+        const endingDate = new Date(endInMs - (6 - i) * 86400000);
+        console.log(initialDate);
+        console.log(endingDate);
+        const q = query(
+          entriesRef,
+          where("uid", "==", user?.user?.uid),
+          where("date", ">=", initialDate),
+          where("date", "<", endingDate)
+        );
 
-      (async () => {
-        const fetchedEntries = [];
-        const fetchedCalories = [];
-        const reducer = (accumulator, curr) => accumulator + curr;
+        (async () => {
+          const fetchedCalories = [];
+          const yourArray = [];
 
-        const docs = await getDocs(q);
+          const reducer = (accumulator, curr) => accumulator + curr;
+          const docs = await getDocs(q);
+          docs.forEach((doc) => {
+            fetchedCalories.push(doc.data().kcal);
+          });
+          const setSum = fetchedCalories.reduce(reducer, 0);
 
-        docs.forEach((doc) => {
-          fetchedEntries.push({ data: doc.data(), id: doc.id });
-          fetchedCalories.push(doc.data().kcal);
-        });
-
-        const setSum = fetchedCalories.reduce(reducer, 0);
-        setEntries(fetchedEntries);
-        if (setSum / maxOneHundred >= 100) {
-          setProgress(100);
-        } else {
-          setProgress(setSum / maxOneHundred);
-        }
-        setRealProgress(setSum);
-      })();
+          console.log(i);
+          console.log(setSum);
+          yourArray.push(setSum);
+        })();
+      }
     }
   }, [user?.user?.uid]);
 
@@ -73,7 +75,7 @@ const WeeklyGoal = () => {
         <Box sx={{ width: "300px" }}>
           <LinearProgress
             variant="determinate"
-            value={progress}
+            value={sundayProgress}
             valueBuffer={0}
           />
         </Box>
@@ -81,7 +83,7 @@ const WeeklyGoal = () => {
         <Box sx={{ width: "300px" }}>
           <LinearProgress
             variant="determinate"
-            value={progress}
+            value={mondayProgress}
             valueBuffer={0}
           />
         </Box>
@@ -89,7 +91,7 @@ const WeeklyGoal = () => {
         <Box sx={{ width: "300px" }}>
           <LinearProgress
             variant="determinate"
-            value={progress}
+            value={tuesdayProgress}
             valueBuffer={0}
           />
         </Box>
@@ -97,7 +99,7 @@ const WeeklyGoal = () => {
         <Box sx={{ width: "300px" }}>
           <LinearProgress
             variant="determinate"
-            value={progress}
+            value={wednesdayProgress}
             valueBuffer={0}
           />
         </Box>
@@ -105,7 +107,7 @@ const WeeklyGoal = () => {
         <Box sx={{ width: "300px" }}>
           <LinearProgress
             variant="determinate"
-            value={progress}
+            value={thursdayProgress}
             valueBuffer={0}
           />
         </Box>
@@ -113,7 +115,7 @@ const WeeklyGoal = () => {
         <Box sx={{ width: "300px" }}>
           <LinearProgress
             variant="determinate"
-            value={progress}
+            value={fridayProgress}
             valueBuffer={0}
           />
         </Box>
@@ -121,7 +123,7 @@ const WeeklyGoal = () => {
         <Box sx={{ width: "300px" }}>
           <LinearProgress
             variant="determinate"
-            value={progress}
+            value={saturdayProgress}
             valueBuffer={0}
           />
         </Box>

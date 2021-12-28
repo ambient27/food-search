@@ -15,8 +15,8 @@ import WeeklyGoal from "./pages/WeeklyGoal";
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#4FBA52",
-      contrastText: "black",
+      main: "#fcd900",
+      contrastText: "#5c2e85",
     },
     secondary: {
       main: "#6A5B6E",

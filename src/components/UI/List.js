@@ -6,10 +6,8 @@ import Divider from "@mui/material/Divider";
 import { Typography } from "@mui/material";
 import { Button } from "@mui/material";
 
-//bgcolor: "#DBA380",
-
 const style = {
-  bgcolor: "#DBA380",
+  bgcolor: "#ffffff",
   borderRadius: "25px",
   borderStyle: "solid",
   textAlign: "center",
@@ -18,9 +16,7 @@ const style = {
 
 export default function ListDividers(props) {
   const selectThisOne = () => {
-    const emptyArray = [];
     const itemPickedArray = [
-      ...emptyArray,
       {
         item: props.text,
         calories: props.calories,
@@ -32,6 +28,21 @@ export default function ListDividers(props) {
       },
     ];
     props.iAteThisThing(itemPickedArray);
+  };
+
+  const editHandler = () => {
+    const itemPickedArray = [
+      {
+        item: props.text,
+        calories: props.calories,
+        protein: props.protein,
+        fat: props.protein,
+        carbs: props.carbs,
+        fiber: props.fiber,
+        category: props.category,
+      },
+    ];
+    props.editModal(itemPickedArray);
   };
 
   const truncate = (str, n) => {
@@ -107,6 +118,9 @@ export default function ListDividers(props) {
           onClick={selectThisOne}
         >
           Select Item
+        </Button>
+        <Button variant="contained" onClick={editHandler}>
+          edit
         </Button>
       </List>
     </>

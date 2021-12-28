@@ -15,6 +15,7 @@ import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import Stack from "@mui/material/Stack";
 import Pagination from "@mui/material/Pagination";
+import BasicModal from "../components/UI/Modal";
 
 const isEmpty = (value) => value.trim() === "";
 const options = ["Breakfast", "Lunch", "Dinner", "Snacks"];
@@ -31,6 +32,8 @@ const NewEntry = () => {
   const [displayAlert, setDisplayAlert] = React.useState(false);
   const [displaySearchAlert, setDisplaySearchAlert] = React.useState(false);
   const [weightSelected, setWeightSelected] = React.useState();
+  const [isEditing, setIsEditing] = React.useState(false);
+  const [editModalArray, setEditModalArray] = React.useState([]);
 
   const fetchMeals = async (event) => {
     event.preventDefault();
@@ -95,6 +98,26 @@ const NewEntry = () => {
     setDisplayAlert(true);
   };
 
+  const editModal = (props) => {
+    setIsEditing(true);
+    const itemPickedArray = [
+      {
+        item: props[0].item,
+        calories: props[0].calories,
+        protein: props[0].protein,
+        fat: props[0].protein,
+        carbs: props[0].carbs,
+        fiber: props[0].fiber,
+        category: props[0].category,
+      },
+    ];
+    setEditModalArray(itemPickedArray);
+  };
+
+  const doneEditingModal = () => {
+    setIsEditing(false);
+  };
+
   const iAteThisThing = async (props) => {
     const foodEntriesRef = collection(firebase.db, "food-entries");
 
@@ -118,14 +141,14 @@ const NewEntry = () => {
   return (
     <>
       <Grid container spacing={1}>
-        <Grid item xs={6} sm={2}>
+        <Grid item xs={6} sm={3} md={2}>
           <TextField
             onChange={searchHandler}
             variant="filled"
             label="Food you ate"
           ></TextField>
         </Grid>
-        <Grid item xs={6} sm={2}>
+        <Grid item xs={6} sm={3} md={2}>
           <Button
             sx={{ margin: ".5rem" }}
             variant="contained"
@@ -134,7 +157,7 @@ const NewEntry = () => {
             Search
           </Button>
         </Grid>
-        <Grid item xs={6} sm={2}>
+        <Grid item xs={6} sm={3} md={2}>
           <Autocomplete
             value={value}
             onChange={(event, newValue) => {
@@ -151,7 +174,7 @@ const NewEntry = () => {
             )}
           />
         </Grid>
-        <Grid item xs={6} sm={2}>
+        <Grid item xs={6} sm={3} md={2}>
           <DesktopDatePicker
             label="Please select a date"
             value={dateSelected}
@@ -163,14 +186,14 @@ const NewEntry = () => {
             renderInput={(params) => <TextField {...params} />}
           />
         </Grid>
-        <Grid item xs={6} sm={2}>
+        <Grid item xs={6} sm={6} md={2}>
           <TextField
             onChange={weightAmountHandler}
             variant="filled"
             label="Weight"
           ></TextField>
         </Grid>
-        <Grid item xs={6} sm={2}>
+        <Grid item xs={6} sm={6} md={2}>
           <Button
             sx={{ margin: ".5rem" }}
             variant="contained"
@@ -188,10 +211,18 @@ const NewEntry = () => {
             </Grid>
           </Grid>
         )}
+        {isEditing && (
+          <BasicModal
+            editModalArray={editModalArray}
+            doneEditingModal={doneEditingModal}
+            iAteThisThing={iAteThisThing}
+          ></BasicModal>
+        )}
         {loaded &&
           subs.map((data, idx) => (
             <Grid item xs={12} md={3} sm={6} key={idx}>
               <ListDividers
+                editModal={editModal}
                 iAteThisThing={iAteThisThing}
                 key={data.foodId}
                 text={data.text}

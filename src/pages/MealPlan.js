@@ -10,7 +10,7 @@ const MealPlan = () => {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={2}></Grid>
+      <Grid item xs={12}></Grid>
       <Box>
         <Typography variant="secondary">Stop eating food</Typography>
         <Button

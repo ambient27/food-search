@@ -31,7 +31,6 @@ const MyTracker = (props) => {
     deleteDoc(doc(firebase.db, "food-entries", `${data.id}`));
     setEntries(entries.filter((entry) => entry.id !== data.id));
     const newProg = realProgress - data.data.kcal;
-    console.log(newProg);
 
     if (newProg / maxOneHundred >= 100) {
       setProgress(100);
@@ -43,7 +42,6 @@ const MyTracker = (props) => {
 
   const showWeekly = () => {
     navigate("../weeklygoal", { replace: true });
-    console.log("hi");
   };
 
   React.useEffect(() => {
@@ -108,7 +106,7 @@ const MyTracker = (props) => {
 
   return (
     <Grid container direction="row" spacing={2}>
-      <Grid item xs={12} sm={2} md={3}>
+      <Grid item xs={12} sm={6} md={3}>
         <DesktopDatePicker
           label="Please select a date to review entries"
           sx={{ fontSize: 14 }}
@@ -121,7 +119,7 @@ const MyTracker = (props) => {
           renderInput={(params) => <TextField {...params} />}
         />
       </Grid>
-      <Grid item xs={12} sm={3} md={3}>
+      <Grid item xs={12} sm={6} md={3}>
         <Typography variant="smallertext" align="center">
           Calories % of goal out of {props.calGoal}
         </Typography>
@@ -133,11 +131,11 @@ const MyTracker = (props) => {
           />
         </Box>
       </Grid>
-      <Grid item xs={12} sm={3} md={3}>
+      <Grid item xs={12} sm={6} md={3}>
         <Typography>Weight entry: {weightEntered[0]}</Typography>
       </Grid>
 
-      <Grid item xs={12} sm={3} md={3}>
+      <Grid item xs={12} sm={6} md={3}>
         <Button variant="contained" onClick={showWeekly}>
           Show me Weekly Goal Data
         </Button>
