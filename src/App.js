@@ -19,7 +19,7 @@ const theme = createTheme({
       contrastText: "#5c2e85",
     },
     secondary: {
-      main: "#6A5B6E",
+      main: "#5c2e85",
     },
     background: {},
   },
@@ -27,7 +27,9 @@ const theme = createTheme({
   typography: {
     fontFamily: ["Roboto", "sans-serif"].join(","),
     htmlFontSize: 10,
-    primary: {},
+    primary: {
+      color: "#5c2e85",
+    },
     secondary: {
       fontFamily: ["Roboto", "sans-serif"],
       color: "black",
@@ -35,13 +37,13 @@ const theme = createTheme({
     },
     smallertext: {
       fontFamily: ["Roboto", "sans-serif"],
-      color: "black",
+      color: "#5c2e85",
       fontSize: 20,
       fontWeight: 600,
     },
     logo: {
       fontFamily: "Open-Sans",
-      color: "black",
+      color: "#5c2e85",
       fontSize: 35,
       fontWeight: 600,
       marginLeft: "5px",

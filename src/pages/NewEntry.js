@@ -146,6 +146,7 @@ const NewEntry = () => {
             onChange={searchHandler}
             variant="filled"
             label="Food you ate"
+            id="string"
           ></TextField>
         </Grid>
         <Grid item xs={6} sm={3} md={2}>
@@ -191,6 +192,7 @@ const NewEntry = () => {
             onChange={weightAmountHandler}
             variant="filled"
             label="Weight"
+            id="number"
           ></TextField>
         </Grid>
         <Grid item xs={6} sm={6} md={2}>

@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import Button from "@mui/material/Button";
 import AppBar from "@mui/material/AppBar";
 import Stack from "@mui/material/Stack";
-import UserContext from "../../store/UserContext";
 import PositionedMenu from "./Menu";
 import Avatar from "@mui/material/Avatar";
 import { Box } from "@mui/system";
@@ -12,8 +11,6 @@ import { Paper } from "@mui/material";
 import { Typography } from "@mui/material";
 
 const MainNavigation = () => {
-  const { user } = React.useContext(UserContext);
-
   const linkStyle = {
     textDecoration: "none",
     color: "black",
