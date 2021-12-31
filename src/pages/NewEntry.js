@@ -31,9 +31,11 @@ const NewEntry = () => {
   const [inputValue, setInputValue] = React.useState("");
   const [displayAlert, setDisplayAlert] = React.useState(false);
   const [displaySearchAlert, setDisplaySearchAlert] = React.useState(false);
-  const [weightSelected, setWeightSelected] = React.useState();
+  const [weightSelected, setWeightSelected] = React.useState("");
   const [isEditing, setIsEditing] = React.useState(false);
   const [editModalArray, setEditModalArray] = React.useState([]);
+  const [weightError, setWeightError] = React.useState(false);
+  const [searchError, setSearchError] = React.useState(false);
 
   const fetchMeals = async (event) => {
     event.preventDefault();
@@ -41,6 +43,7 @@ const NewEntry = () => {
 
     const searchIsValid = !isEmpty(selectedSearch);
     if (!searchIsValid) {
+      setSearchError(true);
       setDisplaySearchAlert(true);
     } else {
       setDisplaySearchAlert(false);
@@ -79,14 +82,20 @@ const NewEntry = () => {
 
   const searchHandler = (event) => {
     setDisplayAlert(false);
+    setSearchError(false);
     setSelectedSearch(event.target.value);
   };
 
   const weightAmountHandler = (event) => {
     setWeightSelected(event.target.value);
+    setWeightError(false);
   };
 
   const weightHandler = async (props) => {
+    if (weightSelected.length === 0) {
+      setWeightError(true);
+      return;
+    }
     const weightEntriesRef = collection(firebase.db, "weight-entries");
 
     await setDoc(doc(weightEntriesRef), {
@@ -147,6 +156,7 @@ const NewEntry = () => {
             variant="filled"
             label="Food you ate"
             id="string"
+            error={searchError}
           ></TextField>
         </Grid>
         <Grid item xs={6} sm={3} md={2}>
@@ -193,6 +203,7 @@ const NewEntry = () => {
             variant="filled"
             label="Weight"
             id="number"
+            error={weightError}
           ></TextField>
         </Grid>
         <Grid item xs={6} sm={6} md={2}>

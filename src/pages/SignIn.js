@@ -10,6 +10,7 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import UserProvider from "../store/UserContext";
 
 function Copyright(props) {
   return (
@@ -42,7 +43,7 @@ export default function SignIn(props) {
         </Typography>
         <Box
           component="form"
-          onSubmit={() => props.handleSubmit()}
+          onSubmit={() => UserProvider()}
           noValidate
           sx={{ mt: 1 }}
         >

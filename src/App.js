@@ -79,7 +79,10 @@ const App = () => {
                   element={<Goals setCalGoal={setCalGoal} />}
                 ></Route>
                 <Route path="signin" element={<SignIn />}></Route>
-                <Route path="weeklygoal" element={<WeeklyGoal />}></Route>
+                <Route
+                  path="weeklygoal"
+                  element={<WeeklyGoal calGoal={calGoal} />}
+                ></Route>
               </Route>
             </Routes>
           </LocalizationProvider>

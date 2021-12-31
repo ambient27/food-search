@@ -58,7 +58,8 @@ export default function BasicModal(props) {
     setTextCount(event.target.value);
   };
   const setCalorieHandler = (event) => {
-    setCalorieCount(event.target.value);
+    const turnToInt = Number(event.target.value);
+    setCalorieCount(turnToInt);
   };
   const setProteinHandler = (event) => {
     setProteinCount(event.target.value);

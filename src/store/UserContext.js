@@ -44,6 +44,7 @@ export const UserProvider = (props) => {
         linkWithCredential(auth.currentUser, credential)
           .then((usercred) => {
             const newGoogleUser = usercred.user;
+
             console.log(
               "Anonymous account successfully upgraded",
               newGoogleUser
