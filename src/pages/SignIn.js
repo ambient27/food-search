@@ -10,7 +10,13 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import UserProvider from "../store/UserContext";
+import {
+  GoogleAuthProvider,
+  signInWithPopup,
+  getAuth,
+  linkWithCredential,
+} from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 
 function Copyright(props) {
   return (
@@ -26,6 +32,69 @@ function Copyright(props) {
 }
 
 export default function SignIn(props) {
+  const [googleUser, setGoogleUser] = React.useState([]);
+
+  const loginHandler = () => {
+    console.log("loginhandler");
+
+    //eslint-disable-next-line no-console
+
+    const getGoogleUser = async () => {
+      const provider = new GoogleAuthProvider();
+      const auth = getAuth();
+      await signInWithPopup(auth, provider).then((result) => {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        // The signed-in user info.
+        const googleUser = result.user;
+        console.log(googleUser);
+        console.log(googleUser.email);
+        console.log(token);
+        setGoogleUser(googleUser);
+      });
+      console.log(googleUser);
+      return googleUser;
+    };
+    (async () => {
+      const promises = [];
+      promises.push(getGoogleUser());
+
+      const googleUser = await Promise.all(promises);
+      console.log(googleUser);
+
+      const auth = getAuth();
+      const credential = GoogleAuthProvider.credential(
+        googleUser.getAuthResponse().id_token
+      );
+
+      linkWithCredential(auth.currentUser, credential)
+        .then((usercred) => {
+          const newGoogleUser = usercred.user;
+
+          console.log("Anonymous account successfully upgraded", newGoogleUser);
+        })
+        .catch((error) => {
+          console.log("Error upgrading anonymous account", error);
+        });
+    })();
+
+    //   // const navigate = useNavigate();
+    //   // navigate("/newentry");
+    // });
+    // console.log(googleUser);
+    // .catch((error) => {
+    //   // Handle Errors here.
+    //   const errorCode = error.code;
+    //   const errorMessage = error.message;
+    //   // The email of the user's account used.
+    //   const email = error.email;
+    //   // The AuthCredential type that was used.
+    //   const credential = GoogleAuthProvider.credentialFromError(error);
+    //   // ...
+    // });
+  };
+
   return (
     <Container component="main" maxWidth="xs">
       <Box
@@ -41,39 +110,12 @@ export default function SignIn(props) {
         <Typography component="h1" variant="smallertext">
           Sign in
         </Typography>
-        <Box
-          component="form"
-          onSubmit={() => UserProvider()}
-          noValidate
-          sx={{ mt: 1 }}
-        >
-          <TextField
-            variant="filled"
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            autoFocus
-          />
-          <TextField
-            variant="filled"
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-          />
+        <Box component="form" noValidate sx={{ mt: 1 }}>
           <FormControlLabel
             control={<Checkbox value="remember" />}
             label="Remember me"
           />
-          <Button type="submit" fullWidth variant="contained">
+          <Button onClick={loginHandler} fullWidth variant="contained">
             Sign In
           </Button>
           <Grid container>
