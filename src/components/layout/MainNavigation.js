@@ -9,8 +9,13 @@ import { Box } from "@mui/system";
 import logoImage from "../../assets/egglogo.jpg";
 import { Paper } from "@mui/material";
 import { Typography } from "@mui/material";
+import UserContext from "../../store/UserContext";
 
 const MainNavigation = () => {
+  const userCtx = React.useContext(UserContext);
+
+  console.log(userCtx.signedIn);
+
   const linkStyle = {
     textDecoration: "none",
     color: "black",
@@ -18,9 +23,7 @@ const MainNavigation = () => {
 
   const navButtonStyle = {
     height: "75px",
-    "&:hover": {
-      background: "#7BCC7E",
-    },
+    color: "black",
   };
 
   const AppBarStyle = {
@@ -29,6 +32,11 @@ const MainNavigation = () => {
     marginLeft: "auto",
     maxWidth: "100%",
     height: "75px",
+  };
+
+  const signoutHandler = () => {
+    console.log("signout");
+    userCtx.signout();
   };
 
   return (
@@ -88,22 +96,41 @@ const MainNavigation = () => {
             Goals
           </Link>
         </Button>
-        <Button
-          variant="outlinedInherit"
-          style={navButtonStyle}
-          sx={{ display: { sm: "block", xs: "none" } }}
-        >
-          <Link to="signin" style={linkStyle}>
-            Sign In
-          </Link>
-        </Button>
+        {!userCtx.signedIn && (
+          <Button
+            variant="outlinedInherit"
+            style={navButtonStyle}
+            sx={{ display: { sm: "block", xs: "none" } }}
+          >
+            <Link to="signin" style={linkStyle}>
+              Sign In
+            </Link>
+          </Button>
+        )}
+        {userCtx.signedIn && (
+          <Button
+            variant="outlinedInherit"
+            style={navButtonStyle}
+            sx={{ display: { sm: "block", xs: "none" } }}
+            onClick={signoutHandler}
+          >
+            Sign Out
+          </Button>
+        )}
         <Box
           sx={{ marginLeft: "auto", paddingTop: "12px", paddingRight: "15px" }}
         >
-          <Avatar
-            src="/broken-image.jpg"
-            sx={{ height: "50px", width: "50px" }}
-          ></Avatar>
+          {!userCtx.signedIn && (
+            <Avatar
+              src="/broken-image.jpg"
+              sx={{ height: "50px", width: "50px" }}
+            ></Avatar>
+          )}
+          {userCtx.signedIn && (
+            <Avatar sx={{ height: "50px", width: "50px", bgcolor: "#5c2e85" }}>
+              IN
+            </Avatar>
+          )}
         </Box>
       </Stack>
     </AppBar>

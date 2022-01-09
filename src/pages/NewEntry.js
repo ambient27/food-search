@@ -37,6 +37,8 @@ const NewEntry = () => {
   const [weightError, setWeightError] = React.useState(false);
   const [searchError, setSearchError] = React.useState(false);
 
+  console.log(user);
+
   const fetchMeals = async (event) => {
     event.preventDefault();
     setSearchStarted(true);
@@ -92,6 +94,7 @@ const NewEntry = () => {
   };
 
   const weightHandler = async (props) => {
+    console.log(user);
     if (weightSelected.length === 0) {
       setWeightError(true);
       return;
@@ -99,7 +102,7 @@ const NewEntry = () => {
     const weightEntriesRef = collection(firebase.db, "weight-entries");
 
     await setDoc(doc(weightEntriesRef), {
-      uid: user?.user?.uid,
+      uid: user,
       date: dateSelected,
       weight: weightSelected,
     });
@@ -137,7 +140,7 @@ const NewEntry = () => {
       protein: props[0].protein,
       label: props[0].item,
       kcal: props[0].calories,
-      uid: user?.user?.uid,
+      uid: user,
       whenate: inputValue,
       fiber: props[0].fiber,
       carbs: props[0].carbs,

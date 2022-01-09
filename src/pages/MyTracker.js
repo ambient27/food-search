@@ -45,7 +45,8 @@ const MyTracker = (props) => {
   };
 
   React.useEffect(() => {
-    if (user?.user?.uid) {
+    if (user) {
+      console.log(user);
       const entriesRef = collection(firebase.db, "food-entries");
       const weightRef = collection(firebase.db, "weight-entries");
 
@@ -60,14 +61,14 @@ const MyTracker = (props) => {
 
       const q = query(
         entriesRef,
-        where("uid", "==", user?.user?.uid),
+        where("uid", "==", user),
         where("date", ">=", startDate),
         where("date", "<", endDate)
       );
 
       const qTwo = query(
         weightRef,
-        where("uid", "==", user?.user?.uid),
+        where("uid", "==", user),
         where("date", ">=", startDate),
         where("date", "<", endDate)
       );
@@ -102,7 +103,7 @@ const MyTracker = (props) => {
         setRealProgress(setSum);
       })();
     }
-  }, [user?.user?.uid, dateSelected, maxOneHundred]);
+  }, [user, dateSelected, maxOneHundred]);
 
   return (
     <Grid container direction="row" spacing={2}>

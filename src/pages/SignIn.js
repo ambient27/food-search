@@ -17,6 +17,7 @@ import {
   linkWithCredential,
 } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import UserContext from "../store/UserContext";
 
 function Copyright(props) {
   return (
@@ -32,14 +33,13 @@ function Copyright(props) {
 }
 
 export default function SignIn(props) {
+  const userCtx = React.useContext(UserContext);
+  const navigate = useNavigate();
   const [googleUser, setGoogleUser] = React.useState([]);
+  const [userId, setUserId] = React.useState();
 
-  const loginHandler = () => {
-    console.log("loginhandler");
-
-    //eslint-disable-next-line no-console
-
-    const getGoogleUser = async () => {
+  React.useEffect(() => {
+    (async () => {
       const provider = new GoogleAuthProvider();
       const auth = getAuth();
       await signInWithPopup(auth, provider).then((result) => {
@@ -51,36 +51,39 @@ export default function SignIn(props) {
         console.log(googleUser);
         console.log(googleUser.email);
         console.log(token);
+        console.log(credential);
         setGoogleUser(googleUser);
+
+        //const credential = GoogleAuthProvider.credential(
+        //  googleUser.getAuthResponse().id_token
+        //);
+
+        linkWithCredential(auth.currentUser, credential)
+          .then((usercred) => {
+            const newGoogleUser = usercred.user;
+
+            console.log(
+              "Anonymous account successfully upgraded",
+              newGoogleUser
+            );
+          })
+          .catch((error) => {
+            console.log(auth.currentUser.uid);
+            userCtx.setUserValue(auth.currentUser.uid);
+            setUserId(auth.currentUser.uid);
+            console.log("Error upgrading anonymous account", error);
+            navigate("/newentry");
+            alert("Signed in success");
+          });
       });
-      console.log(googleUser);
-      return googleUser;
-    };
-    (async () => {
-      const promises = [];
-      promises.push(getGoogleUser());
-
-      const googleUser = await Promise.all(promises);
-      console.log(googleUser);
-
-      const auth = getAuth();
-      const credential = GoogleAuthProvider.credential(
-        googleUser.getAuthResponse().id_token
-      );
-
-      linkWithCredential(auth.currentUser, credential)
-        .then((usercred) => {
-          const newGoogleUser = usercred.user;
-
-          console.log("Anonymous account successfully upgraded", newGoogleUser);
-        })
-        .catch((error) => {
-          console.log("Error upgrading anonymous account", error);
-        });
     })();
+  }, []);
 
-    //   // const navigate = useNavigate();
-    //   // navigate("/newentry");
+  const loginHandler = () => {
+    console.log("loginhandler");
+    //eslint-disable-next-line no-console
+    const auth = getAuth();
+
     // });
     // console.log(googleUser);
     // .catch((error) => {
