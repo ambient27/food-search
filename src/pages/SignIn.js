@@ -57,7 +57,7 @@ export default function SignIn(props) {
         //const credential = GoogleAuthProvider.credential(
         //  googleUser.getAuthResponse().id_token
         //);
-
+        console.log(auth.currentUser);
         linkWithCredential(auth.currentUser, credential)
           .then((usercred) => {
             const newGoogleUser = usercred.user;
@@ -68,8 +68,8 @@ export default function SignIn(props) {
             );
           })
           .catch((error) => {
-            console.log(auth.currentUser.uid);
-            userCtx.setUserValue(auth.currentUser.uid);
+            console.log(auth.currentUser);
+            userCtx.setUserValue(auth.currentUser);
             setUserId(auth.currentUser.uid);
             console.log("Error upgrading anonymous account", error);
             navigate("/newentry");

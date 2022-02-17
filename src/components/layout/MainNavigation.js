@@ -14,8 +14,6 @@ import UserContext from "../../store/UserContext";
 const MainNavigation = () => {
   const userCtx = React.useContext(UserContext);
 
-  console.log(userCtx.signedIn);
-
   const linkStyle = {
     textDecoration: "none",
     color: "black",
@@ -128,7 +126,7 @@ const MainNavigation = () => {
           )}
           {userCtx.signedIn && (
             <Avatar sx={{ height: "50px", width: "50px", bgcolor: "#5c2e85" }}>
-              IN
+              {userCtx.user.displayName}
             </Avatar>
           )}
         </Box>

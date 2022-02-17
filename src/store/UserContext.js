@@ -8,7 +8,7 @@ const UserContext = React.createContext({
 });
 
 export const UserProvider = (props) => {
-  console.log("hi");
+  console.log("userprovidercall");
   const [user, setUser] = React.useState();
   const [signedIn, setSignedIn] = React.useState(false);
   const navigate = useNavigate();
@@ -18,20 +18,20 @@ export const UserProvider = (props) => {
     if (user == null) {
       (async () => {
         const user = await signInAnonymously(firebase.auth);
+
         setUser(user.user.uid);
       })();
     }
   }, []);
 
   const setUserValue = (props) => {
-    console.log(props);
     setUser(props);
     setSignedIn(true);
   };
 
   const signout = () => {
-    console.log("setting signout to null");
-    setUser(null);
+    console.log(user.uid);
+    setUser(user.uid);
     setSignedIn(false);
 
     navigate("/newentry");

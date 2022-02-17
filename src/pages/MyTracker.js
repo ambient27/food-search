@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 
 const MyTracker = (props) => {
   const { user } = React.useContext(UserContext);
+  const userCtx = React.useContext(UserContext);
   const [entries, setEntries] = React.useState([]);
   const [dateSelected, setDateSelected] = React.useState(new Date());
   const [progress, setProgress] = React.useState(0);
@@ -45,8 +46,7 @@ const MyTracker = (props) => {
   };
 
   React.useEffect(() => {
-    if (user) {
-      console.log(user);
+    if (!userCtx.signedIn && user) {
       const entriesRef = collection(firebase.db, "food-entries");
       const weightRef = collection(firebase.db, "weight-entries");
 
@@ -69,6 +69,63 @@ const MyTracker = (props) => {
       const qTwo = query(
         weightRef,
         where("uid", "==", user),
+        where("date", ">=", startDate),
+        where("date", "<", endDate)
+      );
+
+      (async () => {
+        const fetchedEntries = [];
+        const fetchedCalories = [];
+        const fetchedWeight = [];
+        const reducer = (accumulator, curr) => accumulator + curr;
+
+        const docs = await getDocs(q);
+        const docsTwo = await getDocs(qTwo);
+
+        docs.forEach((doc) => {
+          fetchedEntries.push({ data: doc.data(), id: doc.id });
+          fetchedCalories.push(doc.data().kcal);
+        });
+
+        docsTwo.forEach((doc) => {
+          fetchedWeight.push(doc.data().weight);
+        });
+
+        setWeightEntered(fetchedWeight);
+        const setSum = fetchedCalories.reduce(reducer, 0);
+
+        setEntries(fetchedEntries);
+        if (setSum / maxOneHundred >= 100) {
+          setProgress(100);
+        } else {
+          setProgress(setSum / maxOneHundred);
+        }
+        setRealProgress(setSum);
+      })();
+    } else {
+      console.log(user);
+      const entriesRef = collection(firebase.db, "food-entries");
+      const weightRef = collection(firebase.db, "weight-entries");
+
+      dateSelected.setHours(0, 0, 0, 0);
+      const startInMs = dateSelected.getTime();
+
+      dateSelected.setHours(23, 59, 59, 999);
+      const endInMs = dateSelected.getTime();
+
+      const startDate = new Date(startInMs);
+      const endDate = new Date(endInMs);
+
+      const q = query(
+        entriesRef,
+        where("uid", "==", user.uid),
+        where("date", ">=", startDate),
+        where("date", "<", endDate)
+      );
+
+      const qTwo = query(
+        weightRef,
+        where("uid", "==", user.uid),
         where("date", ">=", startDate),
         where("date", "<", endDate)
       );

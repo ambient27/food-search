@@ -37,8 +37,6 @@ const NewEntry = () => {
   const [weightError, setWeightError] = React.useState(false);
   const [searchError, setSearchError] = React.useState(false);
 
-  console.log(user);
-
   const fetchMeals = async (event) => {
     event.preventDefault();
     setSearchStarted(true);
@@ -94,7 +92,6 @@ const NewEntry = () => {
   };
 
   const weightHandler = async (props) => {
-    console.log(user);
     if (weightSelected.length === 0) {
       setWeightError(true);
       return;
