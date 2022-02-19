@@ -7,6 +7,8 @@ import firebase from "../api/firebase";
 import UserContext from "../store/UserContext";
 
 const WeeklyGoal = (props) => {
+  const userCtx = React.useContext(UserContext);
+
   const [sundayProgress, setSundayProgress] = React.useState(0);
   const [mondayProgress, setMondayProgress] = React.useState(0);
   const [tuesdayProgress, setTuesdayProgress] = React.useState(0);
@@ -19,7 +21,17 @@ const WeeklyGoal = (props) => {
   const maxOneHundred = props.calGoal / 100;
 
   React.useEffect(() => {
-    if (user?.user?.uid) {
+    const isLoggedIn = () => {
+      if (userCtx.signedIn) {
+        console.log(userCtx.user.uid);
+
+        return userCtx.user.uid;
+      } else {
+        return user;
+      }
+    };
+
+    if (user) {
       const entriesRef = collection(firebase.db, "food-entries");
       const currentDay = new Date();
       currentDay.setHours(0, 0, 0, 0);
@@ -47,6 +59,9 @@ const WeeklyGoal = (props) => {
       };
 
       const getWeeklyData = async () => {
+        let bestUid = await isLoggedIn();
+
+        console.log(bestUid);
         const promises = [];
         for (let i = 0; i < 7; i++) {
           const initialDate = new Date(startInMs + i * 86400000);
@@ -55,7 +70,7 @@ const WeeklyGoal = (props) => {
           console.log(endingDate);
           const q = query(
             entriesRef,
-            where("uid", "==", user?.user?.uid),
+            where("uid", "==", bestUid),
             where("date", ">=", initialDate),
             where("date", "<", endingDate)
           );
@@ -113,7 +128,7 @@ const WeeklyGoal = (props) => {
         }
       })();
     }
-  }, [user?.user?.uid]);
+  }, [user, maxOneHundred, userCtx.signedIn, userCtx.user.uid]);
 
   return (
     <>

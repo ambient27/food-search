@@ -5,6 +5,7 @@ import ListItemText from "@mui/material/ListItemText";
 import Divider from "@mui/material/Divider";
 import { Typography } from "@mui/material";
 import { Button } from "@mui/material";
+import Tooltip from "@mui/material/Tooltip";
 
 const style = {
   bgcolor: "#ffffff",
@@ -51,13 +52,15 @@ export default function ListDividers(props) {
 
   return (
     <>
-      <List sx={style} component="nav" aria-label="mailbox folders">
+      <List sx={style} aria-label="mailbox folders">
         <ListItem>
           <ListItemText
             primary={
-              <Typography variant="secondary">
-                {truncate(props.text, 20)}
-              </Typography>
+              <Tooltip title={props.text}>
+                <Typography variant="secondary">
+                  {truncate(props.text, 18)}
+                </Typography>
+              </Tooltip>
             }
           />
         </ListItem>

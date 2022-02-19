@@ -15,6 +15,7 @@ import { Typography, Box, Stack, TextField } from "@mui/material";
 import { DesktopDatePicker } from "@mui/lab";
 import LinearProgress from "@mui/material/LinearProgress";
 import { useNavigate } from "react-router-dom";
+import Tooltip from "@mui/material/Tooltip";
 
 const MyTracker = (props) => {
   const { user } = React.useContext(UserContext);
@@ -46,19 +47,49 @@ const MyTracker = (props) => {
   };
 
   React.useEffect(() => {
+    const entriesRef = collection(firebase.db, "food-entries");
+    const weightRef = collection(firebase.db, "weight-entries");
+
+    dateSelected.setHours(0, 0, 0, 0);
+    const startInMs = dateSelected.getTime();
+
+    dateSelected.setHours(23, 59, 59, 999);
+    const endInMs = dateSelected.getTime();
+
+    const startDate = new Date(startInMs);
+    const endDate = new Date(endInMs);
+
+    const fetchData = async (props) => {
+      const fetchedEntries = [];
+      const fetchedCalories = [];
+      const fetchedWeight = [];
+      const reducer = (accumulator, curr) => accumulator + curr;
+
+      const docs = await getDocs(props.q);
+      const docsTwo = await getDocs(props.qTwo);
+
+      docs.forEach((doc) => {
+        fetchedEntries.push({ data: doc.data(), id: doc.id });
+        fetchedCalories.push(doc.data().kcal);
+      });
+
+      docsTwo.forEach((doc) => {
+        fetchedWeight.push(doc.data().weight);
+      });
+
+      setWeightEntered(fetchedWeight);
+      const setSum = fetchedCalories.reduce(reducer, 0);
+
+      setEntries(fetchedEntries);
+      if (setSum / maxOneHundred >= 100) {
+        setProgress(100);
+      } else {
+        setProgress(setSum / maxOneHundred);
+      }
+      setRealProgress(setSum);
+    };
+
     if (!userCtx.signedIn && user) {
-      const entriesRef = collection(firebase.db, "food-entries");
-      const weightRef = collection(firebase.db, "weight-entries");
-
-      dateSelected.setHours(0, 0, 0, 0);
-      const startInMs = dateSelected.getTime();
-
-      dateSelected.setHours(23, 59, 59, 999);
-      const endInMs = dateSelected.getTime();
-
-      const startDate = new Date(startInMs);
-      const endDate = new Date(endInMs);
-
       const q = query(
         entriesRef,
         where("uid", "==", user),
@@ -72,50 +103,10 @@ const MyTracker = (props) => {
         where("date", ">=", startDate),
         where("date", "<", endDate)
       );
-
-      (async () => {
-        const fetchedEntries = [];
-        const fetchedCalories = [];
-        const fetchedWeight = [];
-        const reducer = (accumulator, curr) => accumulator + curr;
-
-        const docs = await getDocs(q);
-        const docsTwo = await getDocs(qTwo);
-
-        docs.forEach((doc) => {
-          fetchedEntries.push({ data: doc.data(), id: doc.id });
-          fetchedCalories.push(doc.data().kcal);
-        });
-
-        docsTwo.forEach((doc) => {
-          fetchedWeight.push(doc.data().weight);
-        });
-
-        setWeightEntered(fetchedWeight);
-        const setSum = fetchedCalories.reduce(reducer, 0);
-
-        setEntries(fetchedEntries);
-        if (setSum / maxOneHundred >= 100) {
-          setProgress(100);
-        } else {
-          setProgress(setSum / maxOneHundred);
-        }
-        setRealProgress(setSum);
-      })();
+      const queryData = { q: q, qTwo: qTwo };
+      fetchData(queryData);
     } else {
       console.log(user);
-      const entriesRef = collection(firebase.db, "food-entries");
-      const weightRef = collection(firebase.db, "weight-entries");
-
-      dateSelected.setHours(0, 0, 0, 0);
-      const startInMs = dateSelected.getTime();
-
-      dateSelected.setHours(23, 59, 59, 999);
-      const endInMs = dateSelected.getTime();
-
-      const startDate = new Date(startInMs);
-      const endDate = new Date(endInMs);
-
       const q = query(
         entriesRef,
         where("uid", "==", user.uid),
@@ -129,45 +120,49 @@ const MyTracker = (props) => {
         where("date", ">=", startDate),
         where("date", "<", endDate)
       );
+      const queryData = { q: q, qTwo: qTwo };
+      fetchData(queryData);
+      // (async () => {
+      //   const fetchedEntries = [];
+      //   const fetchedCalories = [];
+      //   const fetchedWeight = [];
+      //   const reducer = (accumulator, curr) => accumulator + curr;
 
-      (async () => {
-        const fetchedEntries = [];
-        const fetchedCalories = [];
-        const fetchedWeight = [];
-        const reducer = (accumulator, curr) => accumulator + curr;
+      //   const docs = await getDocs(q);
+      //   const docsTwo = await getDocs(qTwo);
 
-        const docs = await getDocs(q);
-        const docsTwo = await getDocs(qTwo);
+      //   docs.forEach((doc) => {
+      //     fetchedEntries.push({ data: doc.data(), id: doc.id });
+      //     fetchedCalories.push(doc.data().kcal);
+      //   });
 
-        docs.forEach((doc) => {
-          fetchedEntries.push({ data: doc.data(), id: doc.id });
-          fetchedCalories.push(doc.data().kcal);
-        });
+      //   docsTwo.forEach((doc) => {
+      //     fetchedWeight.push(doc.data().weight);
+      //   });
 
-        docsTwo.forEach((doc) => {
-          fetchedWeight.push(doc.data().weight);
-        });
+      //   setWeightEntered(fetchedWeight);
+      //   const setSum = fetchedCalories.reduce(reducer, 0);
 
-        setWeightEntered(fetchedWeight);
-        const setSum = fetchedCalories.reduce(reducer, 0);
-
-        setEntries(fetchedEntries);
-        if (setSum / maxOneHundred >= 100) {
-          setProgress(100);
-        } else {
-          setProgress(setSum / maxOneHundred);
-        }
-        setRealProgress(setSum);
-      })();
+      //   setEntries(fetchedEntries);
+      //   if (setSum / maxOneHundred >= 100) {
+      //     setProgress(100);
+      //   } else {
+      //     setProgress(setSum / maxOneHundred);
+      //   }
+      //   setRealProgress(setSum);
+      // })();
     }
-  }, [user, dateSelected, maxOneHundred]);
+  }, [user, dateSelected, maxOneHundred, userCtx.signedIn]);
+
+  const truncate = (str, n) => {
+    return str?.length > n ? str.substr(0, n - 1) + "..." : str;
+  };
 
   return (
     <Grid container direction="row" spacing={2}>
       <Grid item xs={12} sm={6} md={3}>
         <DesktopDatePicker
           label="Please select a date to review entries"
-          sx={{ fontSize: 14 }}
           value={dateSelected}
           maxDate={new Date()}
           minDate={new Date("2021-12-01")}
@@ -178,10 +173,10 @@ const MyTracker = (props) => {
         />
       </Grid>
       <Grid item xs={12} sm={6} md={3}>
-        <Typography variant="smallertext" align="center">
+        <Typography variant="smallertext">
           Calories % of goal out of {props.calGoal}
         </Typography>
-        <Box sx={{ width: "300px" }}>
+        <Box sx={{ width: "275px" }}>
           <LinearProgress
             variant="determinate"
             value={progress}
@@ -190,7 +185,9 @@ const MyTracker = (props) => {
         </Box>
       </Grid>
       <Grid item xs={12} sm={6} md={3}>
-        <Typography>Weight entry: {weightEntered[0]}</Typography>
+        <Typography variant="smallertext">
+          Weight entry: {weightEntered[0]}
+        </Typography>
       </Grid>
 
       <Grid item xs={12} sm={6} md={3}>
@@ -200,10 +197,12 @@ const MyTracker = (props) => {
       </Grid>
       {entries.map((data, idx) => (
         <Grid item xs={12} md={3} sm={6} key={idx}>
-          <Stack direction="column" justifyContent="center" alignItems="center">
-            <Typography variant="secondary">
-              Item - {data.data.label}
-            </Typography>
+          <Stack direction="column" alignItems="left">
+            <Tooltip title={data.data.label}>
+              <Typography variant="secondary">
+                Item - {truncate(data.data.label, 15)}
+              </Typography>
+            </Tooltip>
             <Typography variant="secondary">
               Ate at - {data.data.whenate}
             </Typography>

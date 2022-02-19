@@ -35,6 +35,15 @@ const theme = createTheme({
       color: "black",
       fontSize: 25,
     },
+    includeHover: {
+      fontFamily: ["Roboto", "sans-serif"],
+      color: "black",
+      fontSize: 25,
+      "&:hover": {
+        textDecoration: "underline",
+        color: "red",
+      },
+    },
     smallertext: {
       fontFamily: ["Roboto", "sans-serif"],
       color: "#5c2e85",

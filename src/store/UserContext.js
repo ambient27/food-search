@@ -22,7 +22,7 @@ export const UserProvider = (props) => {
         setUser(user.user.uid);
       })();
     }
-  }, []);
+  }, [user]);
 
   const setUserValue = (props) => {
     setUser(props);
@@ -33,7 +33,6 @@ export const UserProvider = (props) => {
     console.log(user.uid);
     setUser(user.uid);
     setSignedIn(false);
-
     navigate("/newentry");
   };
 

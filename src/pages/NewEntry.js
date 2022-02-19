@@ -22,6 +22,8 @@ const options = ["Breakfast", "Lunch", "Dinner", "Snacks"];
 
 const NewEntry = () => {
   const { user } = React.useContext(UserContext);
+  const userCtx = React.useContext(UserContext);
+
   const [subs, setSubs] = React.useState([]);
   const [loaded, isLoaded] = React.useState(false);
   const [selectedSearch, setSelectedSearch] = React.useState("");
@@ -80,6 +82,16 @@ const NewEntry = () => {
     setSearchStarted(false);
   };
 
+  const isLoggedIn = () => {
+    if (userCtx.signedIn) {
+      console.log(userCtx.user.uid);
+
+      return userCtx.user.uid;
+    } else {
+      return user;
+    }
+  };
+
   const searchHandler = (event) => {
     setDisplayAlert(false);
     setSearchError(false);
@@ -92,6 +104,7 @@ const NewEntry = () => {
   };
 
   const weightHandler = async (props) => {
+    let bestUid = await isLoggedIn();
     if (weightSelected.length === 0) {
       setWeightError(true);
       return;
@@ -99,7 +112,7 @@ const NewEntry = () => {
     const weightEntriesRef = collection(firebase.db, "weight-entries");
 
     await setDoc(doc(weightEntriesRef), {
-      uid: user,
+      uid: bestUid,
       date: dateSelected,
       weight: weightSelected,
     });
@@ -128,6 +141,8 @@ const NewEntry = () => {
   };
 
   const iAteThisThing = async (props) => {
+    let bestUid = await isLoggedIn();
+    console.log(bestUid);
     const foodEntriesRef = collection(firebase.db, "food-entries");
 
     await setDoc(doc(foodEntriesRef), {
@@ -137,7 +152,7 @@ const NewEntry = () => {
       protein: props[0].protein,
       label: props[0].item,
       kcal: props[0].calories,
-      uid: user,
+      uid: bestUid,
       whenate: inputValue,
       fiber: props[0].fiber,
       carbs: props[0].carbs,
