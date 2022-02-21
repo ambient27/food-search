@@ -3,8 +3,10 @@ import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { Link } from "react-router-dom";
+import UserContext from "../../store/UserContext";
 
 export default function PositionedMenu() {
+  const userCtx = React.useContext(UserContext);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -17,6 +19,12 @@ export default function PositionedMenu() {
   const linkStyle = {
     textDecoration: "none",
     color: "black",
+  };
+
+  const signoutHandler = () => {
+    console.log("signout");
+    userCtx.signout();
+    setAnchorEl(null);
   };
 
   return (
@@ -67,11 +75,20 @@ export default function PositionedMenu() {
             Goals
           </Link>
         </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <Link to="signin" style={linkStyle}>
-            Sign In
-          </Link>
-        </MenuItem>
+        {!userCtx.signedIn && (
+          <MenuItem onClick={handleClose}>
+            <Link to="signin" style={linkStyle}>
+              Sign In
+            </Link>
+          </MenuItem>
+        )}
+        {userCtx.signedIn && (
+          <MenuItem onClick={signoutHandler}>
+            <Link to="newentry" style={linkStyle}>
+              Sign Out
+            </Link>
+          </MenuItem>
+        )}
       </Menu>
     </div>
   );

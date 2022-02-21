@@ -47,6 +47,7 @@ const MyTracker = (props) => {
   };
 
   React.useEffect(() => {
+    console.log(userCtx.signedIn);
     const entriesRef = collection(firebase.db, "food-entries");
     const weightRef = collection(firebase.db, "weight-entries");
 
@@ -88,6 +89,10 @@ const MyTracker = (props) => {
       }
       setRealProgress(setSum);
     };
+
+    if (!user) {
+      return;
+    }
 
     if (!userCtx.signedIn && user) {
       const q = query(

@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 const UserContext = React.createContext({
   user: null,
+  signedIn: false,
 });
 
 export const UserProvider = (props) => {
@@ -13,6 +14,7 @@ export const UserProvider = (props) => {
   const [signedIn, setSignedIn] = React.useState(false);
   const navigate = useNavigate();
   console.log(user);
+  console.log(signedIn);
 
   React.useEffect(() => {
     if (user == null) {
