@@ -1,10 +1,7 @@
 import * as React from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
-import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
@@ -23,7 +20,7 @@ function Copyright(props) {
     <Typography variant="body2" align="left" {...props}>
       {"Copyright © "}
       <Link color="inherit" href="https://mui.com/">
-        ErwinPwnsNoobs.com
+        EatLess.com
       </Link>{" "}
       {new Date().getFullYear()}
       {"."}
@@ -81,20 +78,9 @@ export default function SignIn(props) {
           Sign in
         </Typography>
         <Box component="form" noValidate sx={{ mt: 1 }}>
-          <FormControlLabel
-            control={<Checkbox value="remember" />}
-            label="Remember me"
-          />
           <Button onClick={loginHandler} fullWidth variant="contained">
             Sign In With Google
           </Button>
-          <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2" sx={{ color: "black" }}>
-                Forgot password?
-              </Link>
-            </Grid>
-          </Grid>
         </Box>
       </Box>
       <Copyright sx={{ mt: 5, mb: 4 }} />

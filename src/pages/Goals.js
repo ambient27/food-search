@@ -3,6 +3,7 @@ import React from "react";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
+import UserContext from "../store/UserContext";
 import {
   Alert,
   Stack,
@@ -11,8 +12,12 @@ import {
   Grid,
   AlertTitle,
 } from "@mui/material";
+import { collection, doc, setDoc } from "firebase/firestore";
+import firebase from "../api/firebase";
 
 const Goals = (props) => {
+  const { user } = React.useContext(UserContext);
+  const userCtx = React.useContext(UserContext);
   const [calorieGoal, setCalorieGoal] = React.useState("");
   const [value, setValue] = React.useState("");
   const [inputValue, setInputValue] = React.useState("");
@@ -36,6 +41,26 @@ const Goals = (props) => {
   const [displaySugGoal, setSugGoal] = React.useState();
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  const isLoggedIn = () => {
+    if (userCtx.signedIn) {
+      console.log(userCtx.user.uid);
+
+      return userCtx.user.uid;
+    } else {
+      return user;
+    }
+  };
+  const weightHandler = async () => {
+    let bestUid = await isLoggedIn();
+    const calorieGoalRef = collection(firebase.db, "calorie-goals");
+
+    await setDoc(doc(calorieGoalRef), {
+      uid: bestUid,
+      date: new Date(),
+      calorieGoal: calorieGoal,
+    });
+  };
 
   const style = {
     position: "absolute",
@@ -106,7 +131,7 @@ const Goals = (props) => {
       setCalorieError(true);
       return;
     }
-    props.setCalGoal(calorieGoal);
+    weightHandler();
     setDisplaySearchAlert(true);
   };
 
