@@ -11,16 +11,6 @@ import SignIn from "./pages/SignIn";
 import { UserProvider } from "./store/UserContext";
 import Goals from "./pages/Goals";
 import WeeklyGoal from "./pages/WeeklyGoal";
-import firebase from "./api/firebase";
-import UserContext from "./store/UserContext";
-import {
-  collection,
-  deleteDoc,
-  getDocs,
-  query,
-  where,
-  doc,
-} from "firebase/firestore";
 
 const theme = createTheme({
   palette: {
@@ -75,39 +65,6 @@ const theme = createTheme({
 });
 
 const App = () => {
-  const { user } = React.useContext(UserContext);
-  const userCtx = React.useContext(UserContext);
-  const [calGoal, setCalGoal] = React.useState(2000);
-
-  React.useEffect(() => {
-    console.log(userCtx.signedIn);
-    const caloriesRef = collection(firebase.db, "calorie-goals");
-    const fetchedEntries = [];
-
-    const fetchData = async (props) => {
-      const docs = await getDocs(props.q);
-
-      docs.forEach((doc) => {
-        fetchedEntries.push({ data: doc.data(), id: doc.id });
-      });
-      console.log(fetchedEntries);
-    };
-    if (!user) {
-      return;
-    }
-
-    if (!userCtx.signedIn && user) {
-      const q = query(caloriesRef, where("uid", "==", user));
-      const queryData = { q: q };
-      fetchData(queryData);
-    } else {
-      console.log(user);
-      const q = query(caloriesRef, where("uid", "==", user.uid));
-      const queryData = { q: q };
-      fetchData(queryData);
-    }
-  }, [user, userCtx.signedIn]);
-
   return (
     <>
       <UserProvider>
@@ -119,17 +76,11 @@ const App = () => {
                   path="newentry"
                   element={<NewEntry theme={theme} />}
                 ></Route>
-                <Route
-                  path="mytracker"
-                  element={<MyTracker calGoal={calGoal} />}
-                ></Route>
+                <Route path="mytracker" element={<MyTracker />}></Route>
                 <Route path="mealplan" element={<MealPlan />}></Route>
                 <Route path="goals" element={<Goals />}></Route>
                 <Route path="signin" element={<SignIn />}></Route>
-                <Route
-                  path="weeklygoal"
-                  element={<WeeklyGoal calGoal={calGoal} />}
-                ></Route>
+                <Route path="weeklygoal" element={<WeeklyGoal />}></Route>
               </Route>
             </Routes>
           </LocalizationProvider>

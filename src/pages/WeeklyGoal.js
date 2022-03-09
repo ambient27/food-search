@@ -18,7 +18,7 @@ const WeeklyGoal = (props) => {
   const [saturdayProgress, setSaturdayProgress] = React.useState(0);
   const [weeklyCals, setWeeklyCals] = React.useState([0, 0, 0, 0, 0, 0, 0]);
   const { user } = React.useContext(UserContext);
-  const maxOneHundred = props.calGoal / 100;
+  const maxOneHundred = userCtx.calGoal / 100;
 
   React.useEffect(() => {
     const isLoggedIn = () => {

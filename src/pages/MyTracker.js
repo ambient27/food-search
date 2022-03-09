@@ -17,7 +17,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 import { useNavigate } from "react-router-dom";
 import Tooltip from "@mui/material/Tooltip";
 
-const MyTracker = (props) => {
+const MyTracker = () => {
   const { user } = React.useContext(UserContext);
   const userCtx = React.useContext(UserContext);
   const [entries, setEntries] = React.useState([]);
@@ -26,7 +26,7 @@ const MyTracker = (props) => {
   const [weightEntered, setWeightEntered] = React.useState(0);
   const [realProgress, setRealProgress] = React.useState(0);
 
-  const maxOneHundred = props.calGoal / 100;
+  const maxOneHundred = userCtx.calGoal / 100;
   const navigate = useNavigate();
 
   const trackDeleteHandler = (data) => {
@@ -47,7 +47,6 @@ const MyTracker = (props) => {
   };
 
   React.useEffect(() => {
-    console.log(userCtx.signedIn);
     const entriesRef = collection(firebase.db, "food-entries");
     const weightRef = collection(firebase.db, "weight-entries");
 
@@ -111,7 +110,6 @@ const MyTracker = (props) => {
       const queryData = { q: q, qTwo: qTwo };
       fetchData(queryData);
     } else {
-      console.log(user);
       const q = query(
         entriesRef,
         where("uid", "==", user.uid),
@@ -127,35 +125,6 @@ const MyTracker = (props) => {
       );
       const queryData = { q: q, qTwo: qTwo };
       fetchData(queryData);
-      // (async () => {
-      //   const fetchedEntries = [];
-      //   const fetchedCalories = [];
-      //   const fetchedWeight = [];
-      //   const reducer = (accumulator, curr) => accumulator + curr;
-
-      //   const docs = await getDocs(q);
-      //   const docsTwo = await getDocs(qTwo);
-
-      //   docs.forEach((doc) => {
-      //     fetchedEntries.push({ data: doc.data(), id: doc.id });
-      //     fetchedCalories.push(doc.data().kcal);
-      //   });
-
-      //   docsTwo.forEach((doc) => {
-      //     fetchedWeight.push(doc.data().weight);
-      //   });
-
-      //   setWeightEntered(fetchedWeight);
-      //   const setSum = fetchedCalories.reduce(reducer, 0);
-
-      //   setEntries(fetchedEntries);
-      //   if (setSum / maxOneHundred >= 100) {
-      //     setProgress(100);
-      //   } else {
-      //     setProgress(setSum / maxOneHundred);
-      //   }
-      //   setRealProgress(setSum);
-      // })();
     }
   }, [user, dateSelected, maxOneHundred, userCtx.signedIn]);
 
@@ -179,7 +148,7 @@ const MyTracker = (props) => {
       </Grid>
       <Grid item xs={12} sm={6} md={3}>
         <Typography variant="smallertext">
-          Calories % of goal out of {props.calGoal}
+          Calories % of goal out of {userCtx.calGoal}
         </Typography>
         <Box sx={{ width: "275px" }}>
           <LinearProgress

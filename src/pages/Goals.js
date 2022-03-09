@@ -15,7 +15,7 @@ import {
 import { collection, doc, setDoc } from "firebase/firestore";
 import firebase from "../api/firebase";
 
-const Goals = (props) => {
+const Goals = () => {
   const { user } = React.useContext(UserContext);
   const userCtx = React.useContext(UserContext);
   const [calorieGoal, setCalorieGoal] = React.useState("");
@@ -51,14 +51,15 @@ const Goals = (props) => {
       return user;
     }
   };
-  const weightHandler = async () => {
+  const setCalGoalHandler = async (props) => {
     let bestUid = await isLoggedIn();
     const calorieGoalRef = collection(firebase.db, "calorie-goals");
+    console.log(props);
 
     await setDoc(doc(calorieGoalRef), {
       uid: bestUid,
       date: new Date(),
-      calorieGoal: calorieGoal,
+      calorieGoal: props,
     });
   };
 
@@ -116,7 +117,8 @@ const Goals = (props) => {
   };
 
   const setSugGoalHandler = () => {
-    props.setCalGoal(displaySugGoal);
+    userCtx.setCalorieGoal(displaySugGoal);
+    setCalGoalHandler(displaySugGoal);
     handleClose();
     setDisplaySearchAlert(true);
   };
@@ -131,7 +133,8 @@ const Goals = (props) => {
       setCalorieError(true);
       return;
     }
-    weightHandler();
+    userCtx.setCalorieGoal(calorieGoal);
+    setCalGoalHandler(calorieGoal);
     setDisplaySearchAlert(true);
   };
 
